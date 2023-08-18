@@ -10,14 +10,91 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Parent {
   id        String    @id @unique @default(uuid())
   name      String
   email     String    @unique
   password  String
-  role      String?   @default("user")
-  photo     String?   @default("default.png")
   verified  Boolean?  @default(false)
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+  Child     Child[]
+}
+
+model Child {
+  id               String             @id @unique @default(uuid())
+  name             String
+  age              Int
+  parent           Parent             @relation(fields: [parentId], references: [id])
+  parentId         String
+  accessCode      String             @unique @map("acesss_code")
+  verified         Boolean?           @default(false)
+  createdAt        DateTime?          @default(now())
+  updatedAt        DateTime?          @updatedAt
+  AnsweredExercise AnsweredExercise[]
+}
+
+model Subject {
+  id        Int        @id @unique @default(autoincrement())
+  name      String
+  createdAt DateTime?  @default(now())
+  updatedAt DateTime?  @updatedAt
+  Exercise  Exercise[]
+}
+
+model Difficulty {
+  id        Int        @id @unique @default(autoincrement())
+  name      String
+  weight    Int        @unique @default(1)
+  createdAt DateTime?  @default(now())
+  updatedAt DateTime?  @updatedAt
+  Exercise  Exercise[]
+}
+
+model Exercise {
+  id                  String                @id @unique @default(uuid())
+  title               String
+  description         String
+  subject             Subject               @relation(fields: [subjectId], references: [id])
+  subjectId           Int
+  difficulty          Difficulty            @relation(fields: [difficultyId], references: [id])
+  difficultyId        Int
+  createdAt           DateTime?             @default(now())
+  updatedAt           DateTime?             @updatedAt
+  Answer              Answer[]
+  AnsweredExercise    AnsweredExercise[]
+  ExerciseRightAnswer ExerciseRightAnswer[]
+}
+
+model Answer {
+  id                  String                @id @unique @default(uuid())
+  exercise            Exercise              @relation(fields: [exerciseId], references: [id])
+  exerciseId          String
+  answer              String
+  createdAt           DateTime?             @default(now())
+  updatedAt           DateTime?             @updatedAt
+  AnsweredExercise    AnsweredExercise[]
+  ExerciseRightAnswer ExerciseRightAnswer[]
+}
+
+model AnsweredExercise {
+  id         String    @id @unique @default(uuid())
+  exercise   Exercise  @relation(fields: [exerciseId], references: [id])
+  exerciseId String
+  child      Child     @relation(fields: [childId], references: [id])
+  childId    String
+  answer     Answer    @relation(fields: [answerId], references: [id])
+  answerId   String
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+}
+
+model ExerciseRightAnswer {
+  id         String    @id @unique @default(uuid())
+  exercise   Exercise  @relation(fields: [exerciseId], references: [id])
+  exerciseId String
+  answer     Answer    @relation(fields: [answerId], references: [id])
+  answerId   String
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
 }

@@ -41,8 +41,8 @@ const Header = () => {
             {!user && (
               <>
                 <li>
-                  <Link href="/register" className="text-ct-dark-600">
-                    Register
+                  <Link href="/cadastro" className="text-ct-dark-600">
+                    Cadastro
                   </Link>
                 </li>
                 <li>

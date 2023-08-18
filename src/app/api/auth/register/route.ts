@@ -15,13 +15,21 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await hash(data.password, 12);
 
-    const user = await prisma.user.create({
+    const user = await prisma.parent.create({
       data: {
         name: data.name,
         email: data.email,
         password: hashedPassword,
-        photo: data.photo,
-      },
+        //Create a dummy child for the parent
+        Child: {
+          create: {
+            accessCode: "123456",
+            name: "Child",
+            age: 0,
+            verified: false,
+          }
+        }
+      }
     });
 
     return new NextResponse(

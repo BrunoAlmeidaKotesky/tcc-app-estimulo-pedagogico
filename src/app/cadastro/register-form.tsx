@@ -1,10 +1,13 @@
 "use client";
 
-import { LoginUserInput, LoginUserSchema } from "@/lib/validations/user.schema";
+import {
+  RegisterUserInput,
+  RegisterUserSchema,
+} from "@/lib/validations/user.schema";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { apiLoginUser } from "@/lib/api-requests";
+import { apiRegisterUser } from "@/lib/api-requests";
 import FormInput from "@/components/FormInput";
 import Link from "next/link";
 import { LoadingButton } from "@/components/LoadingButton";
@@ -12,13 +15,13 @@ import useStore from "@/store";
 import { handleApiError } from "@/lib/helpers";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { ChildInput } from "@/components/ChildInput";
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const store = useStore();
   const router = useRouter();
-
-  const methods = useForm<LoginUserInput>({
-    resolver: zodResolver(LoginUserSchema),
+  const methods = useForm<RegisterUserInput>({
+    resolver: zodResolver(RegisterUserSchema),
   });
 
   const {
@@ -34,20 +37,13 @@ export default function LoginForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitSuccessful]);
 
-  useEffect(() => {
-    store.reset();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function LoginUserFunction(credentials: LoginUserInput) {
+  async function RegisterUserFunction(credentials: RegisterUserInput) {
     store.setRequestLoading(true);
     try {
-      await apiLoginUser(JSON.stringify(credentials));
-
-      toast.success("Logged in successfully");
-      return router.push("/profile");
+      const user = await apiRegisterUser(JSON.stringify(credentials));
+      store.setAuthUser(user);
+      return router.push("/login");
     } catch (error: any) {
-      console.log(error);
       if (error instanceof Error) {
         handleApiError(error);
       } else {
@@ -59,8 +55,8 @@ export default function LoginForm() {
     }
   }
 
-  const onSubmitHandler: SubmitHandler<LoginUserInput> = (values) => {
-    LoginUserFunction(values);
+  const onSubmitHandler: SubmitHandler<RegisterUserInput> = (values) => {
+    RegisterUserFunction(values);
   };
 
   return (
@@ -69,26 +65,27 @@ export default function LoginForm() {
         onSubmit={handleSubmit(onSubmitHandler)}
         className="max-w-md w-full mx-auto overflow-hidden shadow-lg bg-ct-dark-200 rounded-2xl p-8 space-y-5"
       >
+        <FormInput label="Nome Completo" name="name" />
         <FormInput label="Email" name="email" type="email" />
-        <FormInput label="Password" name="password" type="password" />
-
-        <div className="text-right">
-          <Link href="#" className="">
-            Forgot Password?
+        <FormInput label="Senha" name="password" type="password" />
+        <FormInput
+          label="Confirme sua Senha"
+          name="passwordConfirm"
+          type="password"
+        />
+        <ChildInput />
+        <span className="block">
+          Já possui uma conta?{" "}
+          <Link href="/login" className="text-ct-blue-600">
+            Faça o login aqui
           </Link>
-        </div>
+        </span>
         <LoadingButton
           loading={store.requestLoading}
           textColor="text-ct-blue-600"
         >
-          Login
+          Cadastrar
         </LoadingButton>
-        <span className="block">
-          Need an account?{" "}
-          <Link href="/register" className="text-ct-blue-600">
-            Sign Up Here
-          </Link>
-        </span>
       </form>
     </FormProvider>
   );

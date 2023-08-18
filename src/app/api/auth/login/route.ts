@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     const body = (await req.json()) as LoginUserInput;
     const data = LoginUserSchema.parse(body);
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.parent.findUnique({
       where: { email: data.email },
     });
 
