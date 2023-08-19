@@ -22,12 +22,11 @@ export async function POST(req: NextRequest) {
         password: hashedPassword,
         //Create a dummy child for the parent
         Child: {
-          create: {
-            accessCode: "123456",
-            name: "Child",
-            age: 0,
-            verified: false,
-          }
+          create: data.childs.map((child) => ({
+            name: child.name,
+            age: child.age,
+            accessCode: 'a'
+          }))
         }
       }
     });
