@@ -8,14 +8,18 @@ export async function GET(req: NextRequest) {
   if (!userId) {
     return getErrorResponse(
       401,
-      "You are not logged in, please provide token to gain access"
+      "Você não está logado, por favor forneça um token de acesso."
     );
   }
 
-  const user = await prisma.user.findUnique({ where: { id: userId } });
+  const user = await prisma.parent.findUnique({ where: { id: userId } });
+  const childAccessCodes = await prisma.child.findMany({
+    where: { parentId: userId },
+    select: {name: true, accessCode: true}
+  });
 
   return NextResponse.json({
     status: "success",
-    data: { user: { ...user, password: undefined } },
+    data: { user: { ...user, password: undefined }, childAccessCodes },
   });
 }

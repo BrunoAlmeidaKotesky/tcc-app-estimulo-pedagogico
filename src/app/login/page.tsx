@@ -10,7 +10,11 @@ export default async function LoginPage() {
           <h2 className="text-lg text-center mb-4 text-ct-dark-200">
             Faça login para continuar
           </h2>
-          <div>
+          <div style={{
+            display: 'grid',
+            placeItems: 'center',
+            gap: '16px'
+          }}>
             <Link href={'/login/responsavel'}>
               <button className="w-full bg-ct-dark-200 text-ct-blue-600 rounded-md py-2 px-4">
                 Sou Responsável

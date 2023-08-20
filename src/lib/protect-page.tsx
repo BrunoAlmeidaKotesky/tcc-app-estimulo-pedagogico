@@ -6,7 +6,7 @@ const requireAuth = () => {
   const loggedIn = document.cookie.includes("logged-in=true");
 
   if (!loggedIn) {
-    window.location.href = "/login";
+    window.location.href = "/";
   }
 };
 

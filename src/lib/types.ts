@@ -12,6 +12,7 @@ export interface UserResponse {
   status: string;
   data: {
     user: FilteredUser;
+    childAccessCodes: { name: string; accessCode: string }[];
   };
 }
 

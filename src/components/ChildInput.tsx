@@ -29,7 +29,7 @@ export function ChildInput() {
         <button
             style={{ margin: '12px 0' }}
             className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
-            type="button" onClick={() => append({ name: "", age: "" })}>
+            type="button" onClick={() => append({ name: "", age: null })}>
             {`Adicionar Filho(a)`}
         </button>
     </div>

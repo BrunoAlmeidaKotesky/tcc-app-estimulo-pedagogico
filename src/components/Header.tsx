@@ -29,7 +29,7 @@ const Header = () => {
         <nav className="h-full flex justify-between container items-center">
           <div>
             <Link href="/" className="text-ct-dark-600 text-2xl font-semibold">
-              CodevoWeb
+              TCC APP DE ESTIMULAÇÃO PEDAGÓGICA
             </Link>
           </div>
           <ul className="flex items-center gap-4">
@@ -55,12 +55,12 @@ const Header = () => {
             {user && (
               <>
                 <li>
-                  <Link href="/profile" className="text-ct-dark-600">
-                    Profile
+                  <Link href="/perfil" className="text-ct-dark-600">
+                  Perfil
                   </Link>
                 </li>
                 <li className="cursor-pointer" onClick={handleLogout}>
-                  Logout
+                  Sair
                 </li>
               </>
             )}

@@ -4,7 +4,7 @@ import { LoginUserInput, LoginUserSchema } from "@/lib/validations/user.schema";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { apiLoginUser } from "@/lib/api-requests";
+import ApiClient from "@/lib/ApiClient";
 import FormInput from "@/components/FormInput";
 import Link from "next/link";
 import { LoadingButton } from "@/components/LoadingButton";
@@ -39,30 +39,19 @@ export default function LoginForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function LoginUserFunction(credentials: LoginUserInput) {
+  async function loginUser(credentials: LoginUserInput) {
     store.setRequestLoading(true);
-    try {
-      await apiLoginUser(JSON.stringify(credentials));
-
-      toast.success("Logged in successfully");
-      return router.push("/profile");
-    } catch (error: any) {
-      console.log(error);
-      if (error instanceof Error) {
-        handleApiError(error);
-      } else {
-        toast.error(error.message);
-        console.log("Error message:", error.message);
-      }
-    } finally {
-      store.setRequestLoading(false);
+    const res = await ApiClient.loginUser(JSON.stringify(credentials));
+    if (res.isErr()) {
+      console.log(res.error);
+      toast.error(res.error.message);
     }
+    toast.success("Login realizado com sucesso!");
+    store.setRequestLoading(false);
+    return router.push("/profile");
   }
 
-  const onSubmitHandler: SubmitHandler<LoginUserInput> = (values) => {
-    LoginUserFunction(values);
-  };
-
+  const onSubmitHandler: SubmitHandler<LoginUserInput> = (values) => loginUser(values);
   return (
     <FormProvider {...methods}>
       <form
@@ -70,21 +59,16 @@ export default function LoginForm() {
         className="max-w-md w-full mx-auto overflow-hidden shadow-lg bg-ct-dark-200 rounded-2xl p-8 space-y-5"
       >
         <FormInput label="Email" name="email" type="email" />
-        <FormInput label="Password" name="password" type="password" />
-        <div className="text-right">
-          <Link href="#" className="">
-            Forgot Password?
-          </Link>
-        </div>
+        <FormInput label="Senha" name="password" type="password" />
         <LoadingButton
           loading={store.requestLoading}
           textColor="text-ct-blue-600">
-          Login
+          Entrar
         </LoadingButton>
         <span className="block">
-          Need an account?{" "}
+          Não possui uma conta?{" "}
           <Link href="/cadastro" className="text-ct-blue-600">
-            Sign Up Here
+            Cadastre-se aqui!
           </Link>
         </span>
       </form>

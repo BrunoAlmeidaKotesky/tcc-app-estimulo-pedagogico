@@ -27,7 +27,7 @@ model Child {
   age              Int
   parent           Parent             @relation(fields: [parentId], references: [id])
   parentId         String
-  accessCode      String             @unique @map("acesss_code")
+  accessCode       String             @unique
   verified         Boolean?           @default(false)
   createdAt        DateTime?          @default(now())
   updatedAt        DateTime?          @updatedAt

@@ -26,9 +26,9 @@ export const verifyJWT = async <T>(token: string): Promise<T> => {
         token,
         new TextEncoder().encode(process.env.JWT_SECRET_KEY)
       )
-    ).payload as T;
+    ).payload as unknown as T;
   } catch (error) {
     console.log(error);
-    throw new Error("Your token has expired.");
+    throw new Error("Sua token expirou.");
   }
 };

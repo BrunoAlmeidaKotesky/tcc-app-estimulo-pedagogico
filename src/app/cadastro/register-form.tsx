@@ -7,7 +7,7 @@ import {
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { apiRegisterUser } from "@/lib/api-requests";
+import ApiClient from "@/lib/ApiClient";
 import FormInput from "@/components/FormInput";
 import Link from "next/link";
 import { LoadingButton } from "@/components/LoadingButton";
@@ -16,6 +16,7 @@ import { handleApiError } from "@/lib/helpers";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { ChildInput } from "@/components/ChildInput";
+import { AccessCodeToast } from "@/components/AccessCodeToast";
 
 export default function RegisterForm() {
   const store = useStore();
@@ -27,37 +28,32 @@ export default function RegisterForm() {
   const {
     reset,
     handleSubmit,
-    formState: { isSubmitSuccessful },
+    formState: { isSubmitSuccessful, errors },
   } = methods;
 
   useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset();
-    }
+    if (isSubmitSuccessful) reset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitSuccessful]);
 
-  async function RegisterUserFunction(credentials: RegisterUserInput) {
+  console.log(errors);
+
+  async function registerUser(credentials: RegisterUserInput) {
     store.setRequestLoading(true);
-    try {
-      const user = await apiRegisterUser(JSON.stringify(credentials));
-      store.setAuthUser(user);
-      return router.push("/login");
-    } catch (error: any) {
-      if (error instanceof Error) {
-        handleApiError(error);
-      } else {
-        toast.error(error.message);
-        console.log("Error message:", error.message);
-      }
-    } finally {
-      store.setRequestLoading(false);
+    const response = await ApiClient.registerUser(JSON.stringify(credentials));
+    if (response.isErr()) {
+      handleApiError(response.error);
+      toast.error(response?.error?.message);
+      return store.setRequestLoading(false);
     }
+    const { childAccessCodes, user } = response.unwrap().data;
+    store.setAuthUser(user);
+    toast(({id}) => <AccessCodeToast codes={childAccessCodes} onClose={() => toast.dismiss(id)}/>, {duration: Infinity});
+    store.setRequestLoading(false);
+    return router.push("/login");
   }
 
-  const onSubmitHandler: SubmitHandler<RegisterUserInput> = (values) => {
-    RegisterUserFunction(values);
-  };
+  const onSubmitHandler: SubmitHandler<RegisterUserInput> = (values) => registerUser(values);
 
   return (
     <FormProvider {...methods}>
@@ -80,10 +76,7 @@ export default function RegisterForm() {
             Faça o login aqui
           </Link>
         </span>
-        <LoadingButton
-          loading={store.requestLoading}
-          textColor="text-ct-blue-600"
-        >
+        <LoadingButton loading={store.requestLoading} textColor="text-ct-blue-600">
           Cadastrar
         </LoadingButton>
       </form>
