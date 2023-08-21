@@ -1,25 +1,44 @@
 import { useEffect } from "react";
-import { apiGetAuthUser } from "./api-requests";
+import ApiClient from "./ApiClient";
 import useStore from "@/store";
+import { ChildUser, LoggedParent } from "./types";
+import { None, Option, Some } from "trentim-react-sdk";
+import {match} from 'ts-pattern';
 
-export default function useSession() {
-  const store = useStore();
+export default function useSession<R extends 'parent' | 'child'>(role: R):  
+  R extends 'parent' ? Option<LoggedParent> : Option<ChildUser>
+{
+  const {parentUser, setParentUser, storeReset, childUser, setChildUser} = useStore(s => ({
+    setParentUser: s.setParentUser,
+    storeReset: s.reset,
+    setChildUser: s.setChildUser,
+    parentUser: s.parentUser,
+    childUser: s.childUser
+  }));
 
-  async function fetchUser() {
-    try {
-      const user = await apiGetAuthUser();
-      store.setAuthUser(user);
-    } catch (error: any) {
-      store.reset();
-    }
+  async function fetchParentUser() {
+    const res = await ApiClient.getAuthUser<LoggedParent>();
+    if(res.isErr())
+      return storeReset();
+    setParentUser(res.unwrap().data);
+  }
+
+  async function fetchChildUser() {
+    const res = await ApiClient.getAuthUser<ChildUser>();
+    if(res.isErr())
+      return storeReset();
+    setChildUser(res.unwrap().data);
   }
 
   useEffect(() => {
-    if (!store.authUser) {
-      fetchUser();
-    }
+    if (!parentUser && role === 'parent')
+      fetchParentUser();
+    else if(!childUser && role === 'child')
+      fetchChildUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  return store.authUser;
+  //@ts-ignore
+  return match(role as  'child' | 'parent')
+    .with('parent', () =>  !parentUser ? None : Some(parentUser))
+    .with('child', () => !childUser ? None : Some(childUser)).exhaustive();
 }

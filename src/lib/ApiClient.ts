@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { UserLoginResponse, UserResponse } from "./types";
+import { LoggedParent, UserLoginResponse, UserResponse } from "./types";
 import { Ok, Err, DefaultCatch } from "trentim-react-sdk/helpers";
 import type { Result } from 'trentim-react-sdk/models';
 
@@ -23,7 +23,7 @@ class ApiClient {
   }
 
   @DefaultCatch(err => Err(err))
-  public static async registerUser(credentials: string): Promise<Result<UserResponse, Error>> {
+  public static async registerUser(credentials: string): Promise<Result<UserResponse<LoggedParent>, Error>> {
     const response = await fetch(`${SERVER_ENDPOINT}/api/auth/register`, {
       method: "POST",
       credentials: "include",
@@ -32,7 +32,7 @@ class ApiClient {
       },
       body: credentials,
     });
-    return this.handleResponse<UserResponse>(response);
+    return this.handleResponse<UserResponse<LoggedParent>>(response);
   }
 
   @DefaultCatch(err => Err(err))
@@ -76,7 +76,7 @@ class ApiClient {
   }
 
   @DefaultCatch(err => Err(err))
-  public static async getAuthUser(token?: string): Promise<Result<UserResponse, Error>> {
+  public static async getAuthUser<T>(token?: string): Promise<Result<UserResponse<T>, Error>> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
@@ -90,7 +90,7 @@ class ApiClient {
       credentials: "include",
       headers,
     });
-    const result = await this.handleResponse<UserResponse>(response);
+    const result = await this.handleResponse<UserResponse<T>>(response);
     return result;
   }
 }

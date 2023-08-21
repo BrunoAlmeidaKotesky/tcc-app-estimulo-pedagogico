@@ -1,0 +1,111 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Parent {
+  id String [pk]
+  name String [not null]
+  email String [unique, not null]
+  password String [not null]
+  verified Boolean [default: false]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  Child Child [not null]
+}
+
+Table Child {
+  id String [pk]
+  name String [not null]
+  age Int [not null]
+  points Int [default: 0]
+  parent Parent [not null]
+  parentId String [not null]
+  accessCode String [unique, not null]
+  verified Boolean [default: false]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  AnsweredExercise AnsweredExercise [not null]
+}
+
+Table Subject {
+  id Int [pk, increment]
+  name String [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  Exercise Exercise [not null]
+}
+
+Table Difficulty {
+  id Int [pk, increment]
+  name String [not null]
+  weight Int [unique, not null, default: 1]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  Exercise Exercise [not null]
+}
+
+Table Exercise {
+  id String [pk]
+  title String [not null]
+  description String [not null]
+  subject Subject [not null]
+  subjectId Int [not null]
+  difficulty Difficulty [not null]
+  difficultyId Int [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  Answer Answer [not null]
+  AnsweredExercise AnsweredExercise [not null]
+  ExerciseRightAnswer ExerciseRightAnswer [not null]
+}
+
+Table Answer {
+  id String [pk]
+  exercise Exercise [not null]
+  exerciseId String [not null]
+  answer String [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  AnsweredExercise AnsweredExercise [not null]
+  ExerciseRightAnswer ExerciseRightAnswer [not null]
+}
+
+Table AnsweredExercise {
+  id String [pk]
+  exercise Exercise [not null]
+  exerciseId String [not null]
+  child Child [not null]
+  childId String [not null]
+  answer Answer [not null]
+  answerId String [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+}
+
+Table ExerciseRightAnswer {
+  id String [pk]
+  exercise Exercise [not null]
+  exerciseId String [not null]
+  answer Answer [not null]
+  answerId String [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+}
+
+Ref: Child.parentId > Parent.id
+
+Ref: Exercise.subjectId > Subject.id
+
+Ref: Exercise.difficultyId > Difficulty.id
+
+Ref: Answer.exerciseId > Exercise.id
+
+Ref: AnsweredExercise.exerciseId > Exercise.id
+
+Ref: AnsweredExercise.childId > Child.id
+
+Ref: AnsweredExercise.answerId > Answer.id
+
+Ref: ExerciseRightAnswer.exerciseId > Exercise.id
+
+Ref: ExerciseRightAnswer.answerId > Answer.id

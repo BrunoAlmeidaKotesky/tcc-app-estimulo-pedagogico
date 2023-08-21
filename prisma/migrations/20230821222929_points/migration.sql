@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Child" ADD COLUMN "points" INTEGER DEFAULT 0;

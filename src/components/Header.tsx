@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 
 const Header = () => {
   const store = useStore();
-  const user = useSession();
+  const parentUser = useSession('parent');
+  const childUser = useSession('child');
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -38,7 +39,7 @@ const Header = () => {
                 Home
               </Link>
             </li>
-            {!user && (
+            {!parentUser || !childUser  && (
               <>
                 <li>
                   <Link href="/cadastro" className="text-ct-dark-600">
@@ -52,7 +53,7 @@ const Header = () => {
                 </li>
               </>
             )}
-            {user && (
+            {parentUser.isSome() && (
               <>
                 <li>
                   <Link href="/perfil" className="text-ct-dark-600">

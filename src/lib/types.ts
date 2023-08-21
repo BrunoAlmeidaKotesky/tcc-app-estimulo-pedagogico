@@ -7,12 +7,14 @@ export interface FilteredUser {
   updatedAt: string;
 }
 
-export interface UserResponse {
+export interface LoggedParent {
+  user: FilteredUser;
+  childAccessCodes: { name: string; accessCode: string }[];
+}
+
+export interface UserResponse<D> {
   status: string;
-  data: {
-    user: FilteredUser;
-    childAccessCodes: { name: string; accessCode: string }[];
-  };
+  data: D;
 }
 
 export interface UserLoginResponse {

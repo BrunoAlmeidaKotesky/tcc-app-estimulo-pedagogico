@@ -13,7 +13,6 @@ export async function GET(req: NextRequest) {
   }
 
   const user = await prisma.parent.findUnique({ where: { id: userId } });
-  debugger;
   const childAccessCodes = await prisma.child.findMany({
     where: { parentId: userId },
     select: {name: true, accessCode: true}

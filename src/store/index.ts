@@ -1,13 +1,13 @@
 "use client";
 
-import { ChildUser, FilteredUser } from "@/lib/types";
+import { ChildUser, LoggedParent } from "@/lib/types";
 import { create } from "zustand";
 
 type Store = {
-  parentUser: FilteredUser | null;
+  parentUser: LoggedParent | null;
   childUser: ChildUser | null;
   requestLoading: boolean;
-  setParentUser: (user: FilteredUser | null) => void;
+  setParentUser: (user: LoggedParent | null) => void;
   setChildUser: (user: ChildUser | null) => void;
   setRequestLoading: (isLoading: boolean) => void;
   reset: () => void;
