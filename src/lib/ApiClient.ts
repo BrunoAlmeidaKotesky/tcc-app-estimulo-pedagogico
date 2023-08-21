@@ -36,7 +36,7 @@ class ApiClient {
   }
 
   @DefaultCatch(err => Err(err))
-  public static async loginUser(credentials: string): Promise<Result<UserLoginResponse, Error>> {
+  public static async loginParentUser(credentials: string): Promise<Result<UserLoginResponse, Error>> {
     const response = await fetch(`${SERVER_ENDPOINT}/api/auth/login`, {
       method: "POST",
       credentials: "include",
@@ -44,6 +44,20 @@ class ApiClient {
         "Content-Type": "application/json",
       },
       body: credentials,
+    });
+    const result = await this.handleResponse<UserLoginResponse>(response);
+    return result;
+  }
+
+  @DefaultCatch(err => Err(err))
+  public static async loginChildUser(accessCode: string, name: string): Promise<Result<UserLoginResponse, Error>> {
+    const response = await fetch(`${SERVER_ENDPOINT}/api/auth/child-login`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ accessCode, name }),
     });
     const result = await this.handleResponse<UserLoginResponse>(response);
     return result;

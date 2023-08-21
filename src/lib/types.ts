@@ -3,7 +3,6 @@ export interface FilteredUser {
   name: string;
   email: string;
   role: string;
-  verified: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -19,4 +18,10 @@ export interface UserResponse {
 export interface UserLoginResponse {
   status: string;
   token: string;
+}
+
+export interface ChildUser {
+  name: string;
+  age: number;
+  //Adicionar mais campos aqui conforme necessário.
 }

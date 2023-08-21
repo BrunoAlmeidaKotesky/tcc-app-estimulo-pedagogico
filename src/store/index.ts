@@ -1,23 +1,27 @@
 "use client";
 
-import { FilteredUser } from "@/lib/types";
+import { ChildUser, FilteredUser } from "@/lib/types";
 import { create } from "zustand";
 
 type Store = {
-  authUser: FilteredUser | null;
+  parentUser: FilteredUser | null;
+  childUser: ChildUser | null;
   requestLoading: boolean;
-  setAuthUser: (user: FilteredUser | null) => void;
+  setParentUser: (user: FilteredUser | null) => void;
+  setChildUser: (user: ChildUser | null) => void;
   setRequestLoading: (isLoading: boolean) => void;
   reset: () => void;
 };
 
 const useStore = create<Store>((set) => ({
-  authUser: null,
+  parentUser: null,
   requestLoading: false,
-  setAuthUser: (user) => set((state) => ({ ...state, authUser: user })),
+  childUser: null,
+  setParentUser: (parentUser) => set((state) => ({ ...state, parentUser })),
+  setChildUser: (childUser) => set((state) => ({ ...state, childUser })),
   setRequestLoading: (isLoading) =>
     set((state) => ({ ...state, requestLoading: isLoading })),
-  reset: () => set({ authUser: null, requestLoading: false }),
+  reset: () => set({ parentUser: null, requestLoading: false, childUser: null }),
 }));
 
 export default useStore;

@@ -19,7 +19,11 @@ import { ChildInput } from "@/components/ChildInput";
 import { AccessCodeToast } from "@/components/AccessCodeToast";
 
 export default function RegisterForm() {
-  const store = useStore();
+  const {setRequestLoading, setParentUser, requestLoading} = useStore(s => ({
+    setRequestLoading: s.setRequestLoading,
+    setParentUser: s.setParentUser,
+    requestLoading: s.requestLoading,
+  }));
   const router = useRouter();
   const methods = useForm<RegisterUserInput>({
     resolver: zodResolver(RegisterUserSchema),
@@ -39,17 +43,17 @@ export default function RegisterForm() {
   console.log(errors);
 
   async function registerUser(credentials: RegisterUserInput) {
-    store.setRequestLoading(true);
+    setRequestLoading(true);
     const response = await ApiClient.registerUser(JSON.stringify(credentials));
     if (response.isErr()) {
       handleApiError(response.error);
       toast.error(response?.error?.message);
-      return store.setRequestLoading(false);
+      return setRequestLoading(false);
     }
     const { childAccessCodes, user } = response.unwrap().data;
-    store.setAuthUser(user);
+    setParentUser(user);
     toast(({id}) => <AccessCodeToast codes={childAccessCodes} onClose={() => toast.dismiss(id)}/>, {duration: Infinity});
-    store.setRequestLoading(false);
+    setRequestLoading(false);
     return router.push("/login");
   }
 
@@ -76,7 +80,7 @@ export default function RegisterForm() {
             Faça o login aqui
           </Link>
         </span>
-        <LoadingButton loading={store.requestLoading} textColor="text-ct-blue-600">
+        <LoadingButton loading={requestLoading} textColor="text-ct-blue-600">
           Cadastrar
         </LoadingButton>
       </form>

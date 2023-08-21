@@ -1,15 +1,15 @@
 import { getEnvVariable, getErrorResponse } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
 import { signJWT } from "@/lib/token";
-import { LoginUserInput, LoginUserSchema } from "@/lib/validations/user.schema";
+import { ParentLoginInput, ParentUserSchema } from "@/lib/validations/user.schema";
 import { compare } from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 
 export async function POST(req: NextRequest) {
   try {
-    const body = (await req.json()) as LoginUserInput;
-    const data = LoginUserSchema.parse(body);
+    const body = (await req.json()) as ParentLoginInput;
+    const data = ParentUserSchema.parse(body);
 
     const user = await prisma.parent.findUnique({
       where: { email: data.email },

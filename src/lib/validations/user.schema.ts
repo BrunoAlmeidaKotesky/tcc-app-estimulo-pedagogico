@@ -41,7 +41,7 @@ export const RegisterUserSchema = z
     message: "É obrigatório adicionar pelo menos um filho",
   });
 
-export const LoginUserSchema = z.object({
+export const ParentUserSchema = z.object({
   email: z
     .string({
       required_error: "Email é obrigatório",
@@ -55,5 +55,11 @@ export const LoginUserSchema = z.object({
     .min(1, "Senha é obrigatória")
 });
 
-export type LoginUserInput = z.infer<typeof LoginUserSchema>;
+export const ChildUserSchema = z.object({
+  name: z.string({required_error: "Nome é obrigatório"}),
+  accessCode: z.string({required_error: "Código de acesso é obrigatório"})
+});
+
+export type ParentLoginInput = z.infer<typeof ParentUserSchema>;
 export type RegisterUserInput = z.infer<typeof RegisterUserSchema>;
+export type ChildLoginInput = z.infer<typeof ChildUserSchema>;

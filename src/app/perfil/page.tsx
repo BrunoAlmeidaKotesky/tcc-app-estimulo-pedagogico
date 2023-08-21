@@ -10,7 +10,6 @@ export default async function ProfilePage() {
   const response = await ApiClient.getAuthUser(token?.value);
   if (response.isErr()) return <div>Erro</div>
   const data = response.unwrap().data;
-  console.log(data);
 
   return (
     <>
@@ -25,7 +24,6 @@ export default async function ProfilePage() {
               <p className="mb-3">Id: {data.user.id}</p>
               <p className="mb-3">Nome: {data.user.name}</p>
               <p className="mb-3">Email: {data.user.email}</p>
-              <p className="mb-3">Verificado: {String(data.user.verified)}</p>
               <p className="mb-3">Códigos de acesso:
                 <ul>
                   {data.childAccessCodes.map(({ accessCode, name }) =>

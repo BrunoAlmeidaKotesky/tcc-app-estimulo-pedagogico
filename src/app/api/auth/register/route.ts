@@ -11,6 +11,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { Catch, DefaultCatch } from "trentim-react-sdk/helpers";
 
+type CreateChildParams = {
+  age: number;
+  name: string;
+  parent: {
+      connect: {
+          id: string;
+      };
+  }
+}
+
 class RegisterUserHandler {
   /**Função auxiliar para criar um código de acesso único para a criança.*/
   static createCode(): string {
@@ -22,24 +32,25 @@ class RegisterUserHandler {
     return result;
   }
 
-  static async createChildWithUniqueCode(data: { age: number; name: string; parent: { connect: { id: string } } }): Promise<Child> {
-    const newCode = this.createCode();
+  static async createChildWithUniqueCode(data: CreateChildParams, originalCode: string): Promise<[Child, string]> {
+    const hashedCode = await hash(originalCode, 12);
     try {
       const child = await prisma.child.create({
         data: {
           ...data,
-          accessCode: newCode,
+          accessCode: hashedCode,
         },
       });
-      return child;
+      return [child, originalCode];
     } catch (error: any) {
       if (error.code === "P2002" && error.meta?.target.includes('accessCode')) {
-        return await this.createChildWithUniqueCode(data);
+        return await this.createChildWithUniqueCode(data, this.createCode());
       } else {
         throw error;
       }
     }
   }
+
 
   //Ordem dos decorators é de baixo para cima, ou seja, ZodError é o primeiro a ser executado.
   @DefaultCatch(error => {
@@ -62,11 +73,12 @@ class RegisterUserHandler {
     });
     const childAccessCodes: { name: string; accessCode: string }[] = [];
     for await (const child of data.childs) {
-      const childRes = await this.createChildWithUniqueCode({
+      const originalCode = this.createCode();
+      const [childRes, returnedCode] = await this.createChildWithUniqueCode({
         ...child,
         parent: { connect: { id: parentUser.id } }
-      });
-      childAccessCodes.push({ name: childRes.name, accessCode: childRes.accessCode });
+      }, originalCode);
+      childAccessCodes.push({ name: childRes.name, accessCode: returnedCode });
     }
 
     return new NextResponse(
