@@ -19,9 +19,10 @@ import { ChildInput } from "@/components/ChildInput";
 import { AccessCodeToast } from "@/components/AccessCodeToast";
 
 export default function RegisterForm() {
-  const {setRequestLoading, setParentUser, requestLoading} = useStore(s => ({
+  const {setRequestLoading, setParentUser, requestLoading, setUserType} = useStore(s => ({
     setRequestLoading: s.setRequestLoading,
     setParentUser: s.setParentUser,
+    setUserType: s.setUserType,
     requestLoading: s.requestLoading,
   }));
   const router = useRouter();
@@ -50,10 +51,12 @@ export default function RegisterForm() {
       toast.error(response?.error?.message);
       return setRequestLoading(false);
     }
-    const user = response.unwrap().data;
+    const resData = response.unwrap();
+    const user = resData.data;
     setParentUser(user);
     toast(({id}) => <AccessCodeToast codes={user.childAccessCodes} onClose={() => toast.dismiss(id)}/>, {duration: Infinity});
     setRequestLoading(false);
+    setUserType(resData.userType);
     return router.push("/login");
   }
 

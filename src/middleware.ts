@@ -18,7 +18,7 @@ export async function middleware(req: NextRequest) {
     token = req.headers.get("Authorization")?.substring(7);
   }
 
-  if (req.nextUrl.pathname.startsWith("/login") && (!token || redirectToLogin))
+  if (req.nextUrl.pathname.includes("login") && (!token || redirectToLogin))
     return;
 
   if (
@@ -65,10 +65,10 @@ export async function middleware(req: NextRequest) {
     );
   }
 
-  if (req.url.includes("/login") && authUser) {
+  if (req.url.includes("/parent-login") && authUser)
     return NextResponse.redirect(new URL("/perfil", req.url));
-  }
-
+  else if(req.url.includes("/child-login") && authUser)
+    return NextResponse.redirect(new URL("/questionario", req.url));
   return response;
 }
 

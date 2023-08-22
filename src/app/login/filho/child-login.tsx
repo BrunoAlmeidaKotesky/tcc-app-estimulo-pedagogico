@@ -12,10 +12,11 @@ import toast from "react-hot-toast";
 import { LoadingButton } from "@/components/LoadingButton";
 
 export function ChildLogin() {
-    const { requestLoading, setRequestLoading, storeReset } = useStore(s => ({
+    const { requestLoading, setRequestLoading, storeReset, setUserType } = useStore(s => ({
         requestLoading: s.requestLoading,
         setRequestLoading: s.setRequestLoading,
         storeReset: s.reset,
+        setUserType: s.setUserType
     }));
     const router = useRouter();
 
@@ -51,6 +52,7 @@ export function ChildLogin() {
         }
         toast.success("Login realizado com sucesso!");
         setRequestLoading(false);
+        setUserType(res.unwrap().userType);
         return router.push("/questionario");
     }
 

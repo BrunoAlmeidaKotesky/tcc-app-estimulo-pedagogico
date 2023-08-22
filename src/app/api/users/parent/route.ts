@@ -21,5 +21,6 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     status: "success",
     data: { user: { ...user, password: undefined }, childAccessCodes },
+    userType: 'parent'
   });
 }

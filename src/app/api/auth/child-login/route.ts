@@ -49,7 +49,8 @@ export async function POST(req: NextRequest) {
             JSON.stringify({
                 status: "success",
                 token,
-            }),{ status: 200, headers: { "Content-Type": "application/json" }}
+                userType: 'child'
+            }),{ status: 200, headers: { "Content-Type": "application/json", "X-USER-TYPE": "child" }}
         );
 
         response.cookies.set(cookieOptions);

@@ -13,10 +13,11 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const {requestLoading, setRequestLoading, storeReset} = useStore(s => ({
+  const {requestLoading, setRequestLoading, storeReset, setUserType} = useStore(s => ({
     requestLoading: s.requestLoading,
     setRequestLoading: s.setRequestLoading,
     storeReset: s.reset,
+    setUserType: s.setUserType
   }));
   const router = useRouter();
 
@@ -52,6 +53,7 @@ export default function LoginForm() {
     }
     toast.success("Login realizado com sucesso!");
     setRequestLoading(false);
+    setUserType(res.unwrap().userType);
     return router.push("/perfil");
   }
 

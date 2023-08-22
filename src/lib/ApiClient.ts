@@ -37,7 +37,7 @@ class ApiClient {
 
   @DefaultCatch(err => Err(err))
   public static async loginParentUser(credentials: string): Promise<Result<UserLoginResponse, Error>> {
-    const response = await fetch(`${SERVER_ENDPOINT}/api/auth/login`, {
+    const response = await fetch(`${SERVER_ENDPOINT}/api/auth/parent-login`, {
       method: "POST",
       credentials: "include",
       headers: {

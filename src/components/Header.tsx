@@ -7,13 +7,12 @@ import useStore from "@/store";
 import ApiClient from "@/lib/ApiClient";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { match, P } from 'ts-pattern';
 import { HeaderLink } from "./HeaderLink";
+import { useMemo } from "react";
 
 const Header = () => {
   const store = useStore();
-  const parentUser = useSession('parent');
-  const childUser = useSession('child');
+  const userSession = useSession();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -25,26 +24,21 @@ const Header = () => {
     router.push('/login');
   };
 
-  const renderLinks = () => match([parentUser.isNone(), childUser.isNone()])
-      .with([true, true], () => (
-        <>
-          <HeaderLink href="/cadastro" text="Cadastro" />
-          <HeaderLink href="/login" text="Login" />
-        </>
-      ))
-      .with([false, P._], () => (
-        <>
-          <HeaderLink href="/perfil" text="Perfil" />
-          <HeaderLink text="Sair" onClick={handleLogout} />
-        </>
-      ))
-      .with([true, false], () => (
-        <>
-          <HeaderLink href="/questionario" text="Questionário" />
-          <HeaderLink text="Sair" onClick={handleLogout} />
-        </>
-      ))
-      .exhaustive();
+  const links = useMemo(() => {
+    if (store.userType === null) {
+      return(<>
+        <HeaderLink text="Cadastro" href="/cadastro" />
+        <HeaderLink text="Login" href="/login" />
+      </>);
+    } else if (store.userType === 'parent' || store.userType === 'child') {
+      return(<>
+        <HeaderLink text="Perfil" href="/perfil" />
+        <HeaderLink text="Sair" onClick={handleLogout} />
+      </>);
+    }
+    return null;
+  }, [store.userType]);
+
   
 
   return (
@@ -62,7 +56,7 @@ const Header = () => {
                 Home
               </Link>
             </li>
-            {renderLinks()}
+            {links}
           </ul>
         </nav>
       </header>

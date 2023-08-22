@@ -1,4 +1,4 @@
-'use clinet';
+'use client';
 
 import { useFieldArray, useFormContext } from "react-hook-form";
 import FormInput from "./FormInput";

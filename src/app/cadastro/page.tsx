@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import RegisterForm from "./register-form";
 
 export default async function RegisterPage() {
-  return (
+    return (
     <>
       <Header />
       <section className="py-8 bg-ct-blue-600 min-h-screen grid place-items-center">

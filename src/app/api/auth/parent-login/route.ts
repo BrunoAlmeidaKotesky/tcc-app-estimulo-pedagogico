@@ -40,10 +40,11 @@ export async function POST(req: NextRequest) {
       JSON.stringify({
         status: "success",
         token,
+        userType: 'parent'
       }),
       {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-USER-TYPE": "parent" },
       }
     );
 
