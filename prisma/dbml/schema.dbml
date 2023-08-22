@@ -25,6 +25,7 @@ Table Child {
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
   AnsweredExercise AnsweredExercise [not null]
+  EarnedBadge EarnedBadge [not null]
 }
 
 Table Subject {
@@ -92,6 +93,26 @@ Table ExerciseRightAnswer {
   updatedAt DateTime
 }
 
+Table EarnedBadge {
+  id String [pk]
+  child Child [not null]
+  childId String [not null]
+  badge Badge [not null]
+  badgeId String [not null]
+  createdAt DateTime [default: `now()`]
+}
+
+Table Badge {
+  id String [pk]
+  name String [not null]
+  icon String
+  criteria String [not null]
+  threshold Int [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  EarnedBadge EarnedBadge [not null]
+}
+
 Ref: Child.parentId > Parent.id
 
 Ref: Exercise.subjectId > Subject.id
@@ -109,3 +130,7 @@ Ref: AnsweredExercise.answerId > Answer.id
 Ref: ExerciseRightAnswer.exerciseId > Exercise.id
 
 Ref: ExerciseRightAnswer.answerId > Answer.id
+
+Ref: EarnedBadge.childId > Child.id
+
+Ref: EarnedBadge.badgeId > Badge.id
