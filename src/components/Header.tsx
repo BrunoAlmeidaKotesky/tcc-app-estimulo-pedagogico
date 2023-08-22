@@ -4,8 +4,11 @@ import Spinner from "./Spinner";
 import Link from "next/link";
 import useSession from "@/lib/useSession";
 import useStore from "@/store";
-import { apiLogoutUser } from "@/lib/api-requests";
+import ApiClient from "@/lib/ApiClient";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import { match, P } from 'ts-pattern';
+import { HeaderLink } from "./HeaderLink";
 
 const Header = () => {
   const store = useStore();
@@ -15,14 +18,34 @@ const Header = () => {
 
   const handleLogout = async () => {
     store.setRequestLoading(true);
-    try {
-      await apiLogoutUser();
-    } catch (error) {
-    } finally {
-      store.reset();
-      router.push("/login");
-    }
+    const res = await ApiClient.logoutUser();
+    if (res.isErr())
+      return toast.error("Erro ao fazer logout");
+    store.reset();
+    router.push('/login');
   };
+
+  const renderLinks = () => match([parentUser.isNone(), childUser.isNone()])
+      .with([true, true], () => (
+        <>
+          <HeaderLink href="/cadastro" text="Cadastro" />
+          <HeaderLink href="/login" text="Login" />
+        </>
+      ))
+      .with([false, P._], () => (
+        <>
+          <HeaderLink href="/perfil" text="Perfil" />
+          <HeaderLink text="Sair" onClick={handleLogout} />
+        </>
+      ))
+      .with([true, false], () => (
+        <>
+          <HeaderLink href="/questionario" text="Questionário" />
+          <HeaderLink text="Sair" onClick={handleLogout} />
+        </>
+      ))
+      .exhaustive();
+  
 
   return (
     <>
@@ -39,32 +62,7 @@ const Header = () => {
                 Home
               </Link>
             </li>
-            {!parentUser || !childUser  && (
-              <>
-                <li>
-                  <Link href="/cadastro" className="text-ct-dark-600">
-                    Cadastro
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/login" className="text-ct-dark-600">
-                    Login
-                  </Link>
-                </li>
-              </>
-            )}
-            {parentUser.isSome() && (
-              <>
-                <li>
-                  <Link href="/perfil" className="text-ct-dark-600">
-                  Perfil
-                  </Link>
-                </li>
-                <li className="cursor-pointer" onClick={handleLogout}>
-                  Sair
-                </li>
-              </>
-            )}
+            {renderLinks()}
           </ul>
         </nav>
       </header>

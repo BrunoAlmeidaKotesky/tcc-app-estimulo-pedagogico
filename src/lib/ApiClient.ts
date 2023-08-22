@@ -76,7 +76,7 @@ class ApiClient {
   }
 
   @DefaultCatch(err => Err(err))
-  public static async getAuthUser<T>(token?: string): Promise<Result<UserResponse<T>, Error>> {
+  public static async getAuthUser<T>(type: 'parent'|'child', token?: string): Promise<Result<UserResponse<T>, Error>> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
@@ -85,7 +85,7 @@ class ApiClient {
       headers["Authorization"] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${SERVER_ENDPOINT}/api/users/me`, {
+    const response = await fetch(`${SERVER_ENDPOINT}/api/users/${type}`, {
       method: "GET",
       credentials: "include",
       headers,

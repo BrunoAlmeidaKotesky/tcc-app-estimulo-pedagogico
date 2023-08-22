@@ -50,9 +50,9 @@ export default function RegisterForm() {
       toast.error(response?.error?.message);
       return setRequestLoading(false);
     }
-    const { childAccessCodes, user } = response.unwrap().data;
+    const user = response.unwrap().data;
     setParentUser(user);
-    toast(({id}) => <AccessCodeToast codes={childAccessCodes} onClose={() => toast.dismiss(id)}/>, {duration: Infinity});
+    toast(({id}) => <AccessCodeToast codes={user.childAccessCodes} onClose={() => toast.dismiss(id)}/>, {duration: Infinity});
     setRequestLoading(false);
     return router.push("/login");
   }

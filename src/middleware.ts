@@ -43,7 +43,7 @@ export async function middleware(req: NextRequest) {
   } catch (error) {
     redirectToLogin = true;
     if (req.nextUrl.pathname.startsWith("/api")) {
-      return getErrorResponse(401, "Token is invalid or user doesn't exists");
+      return getErrorResponse(401, "Token é inválido ou não existe");
     }
 
     return NextResponse.redirect(

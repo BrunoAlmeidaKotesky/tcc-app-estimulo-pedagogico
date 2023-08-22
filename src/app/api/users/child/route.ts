@@ -1,0 +1,28 @@
+import { getErrorResponse } from "@/lib/helpers";
+import { prisma } from "@/lib/prisma";
+import { ChildUser } from "@/lib/types";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(req: NextRequest) {
+    const userId = req.headers.get("X-USER-ID");
+
+    if (!userId) {
+        return getErrorResponse(
+            401,
+            "Você não está logado, por favor forneça um token de acesso."
+        );
+    }
+
+    const child = await prisma.child.findUnique({ where: { id: userId } });
+    if(!child)
+        return getErrorResponse(404, "Usuário não encontrado.");
+    const loggedChild: ChildUser = {
+        age: child.age,
+        name: child.name
+    }
+
+    return NextResponse.json({
+        status: "success",
+        data: loggedChild,
+    });
+}

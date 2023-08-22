@@ -2,12 +2,13 @@ import Header from "@/components/Header";
 import ApiClient from "@/lib/ApiClient";
 import { cookies } from "next/headers";
 import { AuthPageInvisible } from "@/lib/protect-page";
+import { LoggedParent } from "@/lib/types";
 
 export default async function ProfilePage() {
   const cookieStore = cookies();
   const token = cookieStore.get("token");
 
-  const response = await ApiClient.getAuthUser(token?.value);
+  const response = await ApiClient.getAuthUser<LoggedParent>('parent', token?.value);
   if (response.isErr()) return <div>Erro</div>
   const data = response.unwrap().data;
 
@@ -24,7 +25,7 @@ export default async function ProfilePage() {
               <p className="mb-3">Id: {data.user.id}</p>
               <p className="mb-3">Nome: {data.user.name}</p>
               <p className="mb-3">Email: {data.user.email}</p>
-              <p className="mb-3">Códigos de acesso:
+              <div className="mb-3">Códigos de acesso:
                 <ul>
                   {data.childAccessCodes.map(({ accessCode, name }) =>
                     <li key={accessCode}>
@@ -36,7 +37,7 @@ export default async function ProfilePage() {
                     </li>
                   )}
                 </ul>
-              </p>
+              </div>
             </div>
           </div>
         </div>
