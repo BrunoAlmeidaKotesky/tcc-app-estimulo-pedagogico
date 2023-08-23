@@ -3,7 +3,7 @@
 import FormInput from "@/components/FormInput"
 import ApiClient from "@/lib/ApiClient";
 import { ChildLoginInput, ChildUserSchema } from "@/lib/validations/user.schema";
-import useStore from "@/store";
+import useStore, { useAppStore } from "@/store";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { LoadingButton } from "@/components/LoadingButton";
 
 export function ChildLogin() {
-    const { requestLoading, setRequestLoading, storeReset, setUserType } = useStore(s => ({
+    const { requestLoading, setRequestLoading, storeReset, setUserType } = useStore(useAppStore, s => ({
         requestLoading: s.requestLoading,
         setRequestLoading: s.setRequestLoading,
         storeReset: s.reset,
@@ -32,7 +32,7 @@ export function ChildLogin() {
 
     useEffect(() => {
         if (isSubmitSuccessful) {
-            storeReset();
+            storeReset(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSubmitSuccessful]);

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import ApiClient from "./ApiClient";
-import useStore from "@/store";
+import useStore, { useAppStore } from "@/store";
 import { ChildUser, LoggedParent } from "./types";
 import { None, NoneType, Option, Some } from "trentim-react-sdk";
 import {match} from 'ts-pattern';
@@ -13,17 +13,17 @@ export default function useSession(): Option<LoggedParent | ChildUser> {
     setParentUser,
     setChildUser,
     reset: storeReset,
-  } = useStore();
+  } = useStore(useAppStore, (s) => s);
 
   async function fetchParentUser() {
     const res = await ApiClient.getAuthUser<LoggedParent>('parent');
-    if (res.isErr()) return storeReset();
+    if (res.isErr()) return storeReset(false);
     setParentUser(res.unwrap().data);
   }
 
   async function fetchChildUser() {
     const res = await ApiClient.getAuthUser<ChildUser>('child');
-    if (res.isErr()) return storeReset();
+    if (res.isErr()) return storeReset(false);
     setChildUser(res.unwrap().data);
   }
 

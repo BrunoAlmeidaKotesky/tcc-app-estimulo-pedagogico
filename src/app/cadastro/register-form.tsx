@@ -11,7 +11,7 @@ import ApiClient from "@/lib/ApiClient";
 import FormInput from "@/components/FormInput";
 import Link from "next/link";
 import { LoadingButton } from "@/components/LoadingButton";
-import useStore from "@/store";
+import useStore, {useAppStore} from "@/store";
 import { handleApiError } from "@/lib/helpers";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -19,7 +19,7 @@ import { ChildInput } from "@/components/ChildInput";
 import { AccessCodeToast } from "@/components/AccessCodeToast";
 
 export default function RegisterForm() {
-  const {setRequestLoading, setParentUser, requestLoading, setUserType} = useStore(s => ({
+  const {setRequestLoading, setParentUser, requestLoading, setUserType} = useStore(useAppStore, s => ({
     setRequestLoading: s.setRequestLoading,
     setParentUser: s.setParentUser,
     setUserType: s.setUserType,

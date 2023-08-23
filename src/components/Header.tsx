@@ -3,7 +3,7 @@
 import Spinner from "./Spinner";
 import Link from "next/link";
 import useSession from "@/lib/useSession";
-import useStore from "@/store";
+import useStore, { useAppStore } from "@/store";
 import ApiClient from "@/lib/ApiClient";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
@@ -11,8 +11,8 @@ import { HeaderLink } from "./HeaderLink";
 import { useMemo } from "react";
 
 const Header = () => {
-  const store = useStore();
-  const userSession = useSession();
+  const store = useStore(useAppStore, s => s);
+  useSession();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -20,7 +20,7 @@ const Header = () => {
     const res = await ApiClient.logoutUser();
     if (res.isErr())
       return toast.error("Erro ao fazer logout");
-    store.reset();
+    store.reset(true);
     router.push('/login');
   };
 
@@ -30,16 +30,19 @@ const Header = () => {
         <HeaderLink text="Cadastro" href="/cadastro" />
         <HeaderLink text="Login" href="/login" />
       </>);
-    } else if (store.userType === 'parent' || store.userType === 'child') {
+    } else if (store.userType === 'parent') {
       return(<>
         <HeaderLink text="Perfil" href="/perfil" />
+        <HeaderLink text="Sair" onClick={handleLogout} />
+      </>);
+    } else if(store.userType === 'child') {
+      return(<>
+        <HeaderLink text="Questionário" href="/questionario" />
         <HeaderLink text="Sair" onClick={handleLogout} />
       </>);
     }
     return null;
   }, [store.userType]);
-
-  
 
   return (
     <>
