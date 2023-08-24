@@ -28,7 +28,7 @@ export async function middleware(req: NextRequest) {
   ) {
     return getErrorResponse(
       401,
-      "You are not logged in. Please provide a token to gain access."
+      "Você não está logado, por favor forneça um token de acesso."
     );
   }
 
@@ -37,6 +37,7 @@ export async function middleware(req: NextRequest) {
   try {
     if (token) {
       const { sub } = await verifyJWT<{ sub: string }>(token);
+      req.headers.set("X-USER-ID", sub);
       response.headers.set("X-USER-ID", sub);
       (req as AuthenticatedRequest).user = { id: sub };
     }

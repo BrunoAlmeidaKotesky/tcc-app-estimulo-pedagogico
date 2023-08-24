@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
         const tokenMaxAge = parseInt(JWT_EXPIRES_IN) * 60;
         const cookieOptions = {
-            name: "child-token",
+            name: "token",
             value: token,
             httpOnly: true,
             path: "/",

@@ -12,12 +12,7 @@ import toast from "react-hot-toast";
 import { LoadingButton } from "@/components/LoadingButton";
 
 export function ChildLogin() {
-    const { requestLoading, setRequestLoading, storeReset, setUserType } = useStore(useAppStore, s => ({
-        requestLoading: s.requestLoading,
-        setRequestLoading: s.setRequestLoading,
-        storeReset: s.reset,
-        setUserType: s.setUserType
-    }));
+    const store = useStore(useAppStore, s => s);
     const router = useRouter();
 
     const methods = useForm<ChildLoginInput>({
@@ -32,7 +27,7 @@ export function ChildLogin() {
 
     useEffect(() => {
         if (isSubmitSuccessful) {
-            storeReset(false);
+            store?.reset(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSubmitSuccessful]);
@@ -43,16 +38,16 @@ export function ChildLogin() {
     }, []);
 
     async function loginUser({accessCode, name}: ChildLoginInput) {
-        setRequestLoading(true);
+        store?.setRequestLoading(true);
         const res = await ApiClient.loginChildUser(accessCode, name);
         if (res.isErr()) {
             console.log(res.error);
-            setRequestLoading(false);
+            store?.setRequestLoading(false);
             return toast.error(res.error.message);
         }
         toast.success("Login realizado com sucesso!");
-        setRequestLoading(false);
-        setUserType(res.unwrap().userType);
+        store?.setRequestLoading(false);
+        store?.setUserType(res.unwrap().userType);
         return router.push("/questionario");
     }
 
@@ -65,7 +60,7 @@ export function ChildLogin() {
                 className="max-w-md w-full mx-auto overflow-hidden shadow-lg bg-ct-dark-200 rounded-2xl p-8 space-y-5">
                 <FormInput type="text" name="name" label="Nome" />
                 <FormInput type="text" name="accessCode" label="Código de Acesso"/>
-                <LoadingButton loading={requestLoading} textColor="text-ct-blue-600">
+                <LoadingButton loading={store?.requestLoading || false} textColor="text-ct-blue-600">
                     Entrar
                 </LoadingButton>
             </form>

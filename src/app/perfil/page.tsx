@@ -6,7 +6,7 @@ import { LoggedParent } from "@/lib/types";
 
 export default async function ProfilePage() {
   const cookieStore = cookies();
-  const token = cookieStore.get("token");
+  const token = cookieStore?.get("token");
 
   const response = await ApiClient.getAuthUser<LoggedParent>('parent', token?.value);
   if (response.isErr()) return <div>Erro</div>

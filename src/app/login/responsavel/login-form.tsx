@@ -13,12 +13,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const {requestLoading, setRequestLoading, storeReset, setUserType} = useStore(useAppStore, s => ({
-    requestLoading: s.requestLoading,
-    setRequestLoading: s.setRequestLoading,
-    storeReset: s.reset,
-    setUserType: s.setUserType
-  }));
+  const store = useStore(useAppStore, s => s);
   const router = useRouter();
 
   const methods = useForm<ParentLoginInput>({
@@ -33,7 +28,7 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (isSubmitSuccessful) {
-      storeReset(false);
+      store?.reset(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitSuccessful]);
@@ -44,16 +39,16 @@ export default function LoginForm() {
   }, []);
 
   async function loginUser(credentials: ParentLoginInput) {
-    setRequestLoading(true);
+    store?.setRequestLoading(true);
     const res = await ApiClient.loginParentUser(JSON.stringify(credentials));
     if (res.isErr()) {
       console.log(res.error);
-      setRequestLoading(false);
+      store?.setRequestLoading(false);
       return toast.error(res.error.message);
     }
     toast.success("Login realizado com sucesso!");
-    setRequestLoading(false);
-    setUserType(res.unwrap().userType);
+    store?.setRequestLoading(false);
+    store?.setUserType(res.unwrap().userType);
     return router.push("/perfil");
   }
 
@@ -67,7 +62,7 @@ export default function LoginForm() {
         <FormInput label="Email" name="email" type="email" />
         <FormInput label="Senha" name="password" type="password" />
         <LoadingButton
-          loading={requestLoading}
+          loading={store?.requestLoading || false}
           textColor="text-ct-blue-600">
           Entrar
         </LoadingButton>

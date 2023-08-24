@@ -2,9 +2,9 @@
 
 import { ChildUser, LoggedParent } from "@/lib/types";
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
-import { immer } from 'zustand/middleware/immer';
+import { persist } from "zustand/middleware";
 import { useState, useEffect } from 'react'
+import { None, Some, Option } from "trentim-react-sdk";
 
 type State = {
   userType: "parent" | "child" | null;
@@ -24,7 +24,7 @@ type Actions = {
 export type Store = State & Actions;
 
 export const useAppStore = create(
-  persist(immer<Store>(
+  persist<Store>(
     (set) => ({
       parentUser: null,
       userType: null,
@@ -40,21 +40,22 @@ export const useAppStore = create(
         childUser: null,
         userType: resetUserType ? null : state.userType
       })),
-    })), { name: 'app-storage', storage: createJSONStorage(() => sessionStorage) })
+    }), 
+    { name: 'app-storage' })
 );
 
 const useStore = <T, F>(
   store: (callback: (state: T) => unknown) => unknown,
   callback: (state: T) => F
 ) => {
-  const result = store(callback) as F
-  const [data, setData] = useState<F>()
+  const result = store(callback) as F;
+  const [data, setData] = useState<F>();
 
   useEffect(() => {
-    setData(result)
-  }, [result])
+    setData(result);
+  }, [result]);
 
-  return data as F;
-}
+  return data;
+};
 
 export default useStore;
