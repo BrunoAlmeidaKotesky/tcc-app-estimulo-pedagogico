@@ -157,7 +157,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         else
             exercises = await getRecommendedExercises(childId);
 
-        return new NextResponse(JSON.stringify({}), {
+            
+        return new NextResponse(JSON.stringify(exercises), {
             status: 200, headers: { "Content-Type": "application/json" }
         });
     } catch (e: any) {

@@ -1,3 +1,5 @@
+import { Badge, EarnedBadge } from "@prisma/client";
+
 export interface FilteredUser {
   id: string;
   name: string;
@@ -7,6 +9,7 @@ export interface FilteredUser {
   updatedAt: string;
 }
 
+export type UserType = 'parent' | 'child';
 export interface LoggedParent {
   user: FilteredUser;
   childAccessCodes: { name: string; accessCode: string }[];
@@ -15,13 +18,13 @@ export interface LoggedParent {
 export interface UserResponse<D> {
   status: string;
   data: D;
-  userType: 'parent' | 'child';
+  userType: UserType;
 }
 
 export interface UserLoginResponse {
   status: string;
   token: string;
-  userType: 'parent' | 'child';
+  userType: UserType;
 }
 
 export interface ChildUser {
@@ -34,4 +37,13 @@ export interface ExerciseBody {
   exerciseId: string;
   childId: string;
   answerId: string;
+}
+
+export interface BadgeBody {
+  userType: UserType;
+}
+
+export interface BadgeResponse {
+  earnedBadges: EarnedBadge[];
+  allBadges: Badge[];
 }
