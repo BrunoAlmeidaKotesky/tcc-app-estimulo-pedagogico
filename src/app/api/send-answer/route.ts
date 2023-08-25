@@ -1,3 +1,4 @@
+import { POINTS_MAP, WeightValues } from "@/lib/constants";
 import { getErrorResponse } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
@@ -9,11 +10,20 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const rightAnswer = await prisma.exerciseRightAnswer.findFirst({
       where: {
         exerciseId
+      },
+      select: {
+        answerId: true,
+        exercise: {
+          select: {
+            difficulty: true
+          }
+        }
       }
     });
     if (!rightAnswer)
       return getErrorResponse(401, "Não foi encontrado uma resposta correta cadastrada.");
     const rightAnswerId = rightAnswer?.answerId;
+    const difficulty = rightAnswer?.exercise?.difficulty;
     const isRightAnswer = answerId === rightAnswerId;
     const createdAnswer = await prisma.answeredExercise.create({
       data: {
@@ -24,10 +34,37 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
     if (!createdAnswer)
       return getErrorResponse(401, "Nao foi possível salvar a sua resposta.");
+    const child = await prisma.child.findUnique({
+      where: {
+        id: childId
+      }
+    });
+    if (!child)
+      return getErrorResponse(401, "Não foi encontrado um usuário com esse id.");
+
+    const childPoints = child?.points || 0;
+    const { increase, decrease } = POINTS_MAP.get(difficulty as WeightValues) || { increase: 0, decrease: 0 };
+    const newPoints = isRightAnswer ? childPoints + increase : childPoints - decrease;
+
+    try {
+      await prisma.child.update({
+        where: {
+          id: childId
+        },
+        data: {
+          points: newPoints
+        }
+      });
+    } catch (e) {
+      console.log(e);
+      return getErrorResponse(401, "Não foi possível atualizar os pontos do usuário.");
+    }
+
     return new NextResponse(
       JSON.stringify({
         status: "success",
-        isRightAnswer
+        isRightAnswer,
+        newPoints
       }),
       {
         status: 201,

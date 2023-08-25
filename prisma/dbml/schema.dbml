@@ -36,23 +36,13 @@ Table Subject {
   Exercise Exercise [not null]
 }
 
-Table Difficulty {
-  id Int [pk, increment]
-  name String [not null]
-  weight Int [unique, not null, default: 1]
-  createdAt DateTime [default: `now()`]
-  updatedAt DateTime
-  Exercise Exercise [not null]
-}
-
 Table Exercise {
   id String [pk]
   title String [not null]
   description String [not null]
   subject Subject [not null]
   subjectId Int [not null]
-  difficulty Difficulty [not null]
-  difficultyId Int [not null]
+  difficulty Int [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
   Answer Answer [not null]
@@ -116,8 +106,6 @@ Table Badge {
 Ref: Child.parentId > Parent.id
 
 Ref: Exercise.subjectId > Subject.id
-
-Ref: Exercise.difficultyId > Difficulty.id
 
 Ref: Answer.exerciseId > Exercise.id
 

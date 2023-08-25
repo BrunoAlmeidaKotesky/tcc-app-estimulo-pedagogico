@@ -48,23 +48,13 @@ model Subject {
   Exercise  Exercise[]
 }
 
-model Difficulty {
-  id        Int        @id @unique @default(autoincrement())
-  name      String
-  weight    Int        @unique @default(1)
-  createdAt DateTime?  @default(now())
-  updatedAt DateTime?  @updatedAt
-  Exercise  Exercise[]
-}
-
 model Exercise {
   id                  String                @id @unique @default(uuid())
   title               String
   description         String
   subject             Subject               @relation(fields: [subjectId], references: [id])
   subjectId           Int
-  difficulty          Difficulty            @relation(fields: [difficultyId], references: [id])
-  difficultyId        Int
+  difficulty          Int                   
   createdAt           DateTime?             @default(now())
   updatedAt           DateTime?             @updatedAt
   Answer              Answer[]
