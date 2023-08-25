@@ -29,3 +29,9 @@ export interface ChildUser {
   age: number;
   //Adicionar mais campos aqui conforme necessário.
 }
+
+export interface ExerciseBody {
+  exerciseId: string;
+  childId: string;
+  answerId: string;
+}

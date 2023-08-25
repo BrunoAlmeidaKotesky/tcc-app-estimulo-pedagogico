@@ -1,6 +1,7 @@
 import { POINTS_MAP, WeightValues } from "@/lib/constants";
 import { getErrorResponse } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
+import { ExerciseBody } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -75,10 +76,4 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   } catch (e: any) {
     return getErrorResponse(500, e.message);
   }
-}
-
-interface ExerciseBody {
-  exerciseId: string;
-  childId: string;
-  answerId: string;
 }
