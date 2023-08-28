@@ -29,3 +29,11 @@ POINTS_MAP.set(DIFFICULTY_WEIGHTS.VERY_HARD, {
     increase: 40,
     decrease: 20,   
 });
+
+export const BADGE_SELECT = {
+    id: true,
+    name: true,
+    icon: true,
+    criteria: true,
+    threshold: true
+}

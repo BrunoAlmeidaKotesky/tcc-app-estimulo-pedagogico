@@ -43,7 +43,16 @@ export interface BadgeBody {
   userType: UserType;
 }
 
+export type BadgeData = {
+  badgeId: string;
+  badge: {
+      name: string;
+      icon: string | null;
+      criteria: string;
+      threshold: number;
+  };
+};
 export interface BadgeResponse {
-  earnedBadges: EarnedBadge[];
-  allBadges: Badge[];
+  earnedBadges: BadgeData[];
+  allBadges: BadgeData[];
 }
