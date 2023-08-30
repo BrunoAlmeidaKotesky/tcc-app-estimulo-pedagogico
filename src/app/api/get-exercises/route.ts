@@ -1,7 +1,8 @@
 import { DIFFICULTY_WEIGHTS } from "@/lib/constants";
 import { getErrorResponse } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
-import { Exercise } from "@prisma/client";
+import { AnswerByExercise } from "@/lib/types";
+import { Answer, Exercise } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 async function getInitialExercises(
@@ -140,6 +141,24 @@ const getRecommendedExercises = async (childId: string): Promise<Exercise[]> => 
     return exercisesToGet;
 }
 
+async function getExercisesAnswers(exercises: Exercise[]): Promise<AnswerByExercise[]> {
+    const answersToExercises: Answer[] = await prisma.answer.findMany({
+        where: {
+            exerciseId: { in: exercises.map(e => e.id) }
+        },
+    });
+    if(!answersToExercises?.length)
+        throw new Error("Não foi possível localizar as respostas das questões");
+
+    const answerByExercise: AnswerByExercise[] = [];
+    for (const exercise of exercises) {
+        const answers = answersToExercises.filter(a => a.exerciseId === exercise.id);
+        if(answers.length > 0)
+            answerByExercise.push({ exercise, answers });
+    }
+    return answerByExercise;
+}
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const childId = req.headers.get("X-USER-ID");
@@ -157,8 +176,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         else
             exercises = await getRecommendedExercises(childId);
 
-            
-        return new NextResponse(JSON.stringify(exercises), {
+        const exercisesWithAnswer = await getExercisesAnswers(exercises);
+
+        return new NextResponse(JSON.stringify({exercises: exercisesWithAnswer}), {
             status: 200, headers: { "Content-Type": "application/json" }
         });
     } catch (e: any) {

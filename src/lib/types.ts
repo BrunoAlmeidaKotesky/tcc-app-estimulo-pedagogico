@@ -1,4 +1,5 @@
-import { Badge, EarnedBadge } from "@prisma/client";
+import type { Answer, Exercise } from "@prisma/client";
+import type {  } from 'trentim-react-sdk/models';
 
 export interface FilteredUser {
   id: string;
@@ -55,4 +56,9 @@ export type BadgeData = {
 export interface BadgeResponse {
   earnedBadges: BadgeData[];
   allBadges: BadgeData[];
+}
+
+export interface AnswerByExercise {
+  exercise: Exercise;
+  answers: Answer[];
 }
