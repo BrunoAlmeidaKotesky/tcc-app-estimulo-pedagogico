@@ -1,16 +1,13 @@
 import { getErrorResponse } from "@/lib/helpers";
 import { prisma } from "@/lib/prisma";
-import { BadgeBody, BadgeData, BadgeResponse } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
-import { BADGE_SELECT as select } from '@/lib/constants';
 import { Badge } from "@prisma/client";
 
 function checkPoints(childPoints: number, allBadges: Badge[], earnedBadges: string[]): string[] {
     const pointBadges = allBadges.filter(b => b.criteria === 'points');
     for (let badge of pointBadges) {
-        if (childPoints >= badge.threshold) {
+        if (childPoints >= badge.threshold)
             earnedBadges.push(badge.id);
-        }
     }
     return earnedBadges;
 }
