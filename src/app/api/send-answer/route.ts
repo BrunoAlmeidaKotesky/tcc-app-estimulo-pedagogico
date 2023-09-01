@@ -63,7 +63,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     return new NextResponse(
       JSON.stringify({
-        status: "success",
         isRightAnswer,
         newPoints
       }),

@@ -162,7 +162,6 @@ async function getExercisesAnswers(exercises: Exercise[]): Promise<AnswerByExerc
 export async function GET(req: NextRequest): Promise<NextResponse> {
     try {
         const childId = req.headers.get("X-USER-ID");
-
         if (!childId)
             return getErrorResponse(401, "Você não está logado, por favor forneça um token de acesso.");
         const answeredExercises = await prisma.answeredExercise.findMany({
@@ -175,9 +174,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             exercises = await getInitialExercises(childId, numberOfAnsweredEx, answeredExerciseIds);
         else
             exercises = await getRecommendedExercises(childId);
-
+        if(exercises.length === 0)
+            return getErrorResponse(404, "Não foi possível localizar os exercicíos");
         const exercisesWithAnswer = await getExercisesAnswers(exercises);
-
+        if(exercisesWithAnswer.length === 0)
+            return getErrorResponse(404, "Não foi possível localizar as respostas das questões");
         return new NextResponse(JSON.stringify({exercises: exercisesWithAnswer}), {
             status: 200, headers: { "Content-Type": "application/json" }
         });

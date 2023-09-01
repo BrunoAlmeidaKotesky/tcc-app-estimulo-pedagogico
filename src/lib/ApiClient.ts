@@ -1,16 +1,17 @@
 import "reflect-metadata";
-import { AnswerByExercise, LoggedParent, UserLoginResponse, UserResponse } from "./types";
-import { Ok, Err, DefaultCatch, Result } from "bakutils-catcher";
+import type { AnswerByExercise, ExerciseBody, LoggedParent, SendAnswerResponse, UserLoginResponse, UserResponse } from "./types";
+import { Ok, Err, DefaultCatch } from "trentim-react-sdk/helpers";
+import { Result } from "trentim-react-sdk/dist/models/index";
 
 const SERVER_ENDPOINT = process.env.SERVER_ENDPOINT || "http://localhost:3000";
 
+/**Esse código ta meio que muito repetitivo, dá pra reduzir */
 class ApiClient {
 
   private static async handleResponse<T>(response: Response): Promise<Result<T, Error>> {
     const contentType = response.headers.get("Content-Type") || "";
     const isJson = contentType.includes("application/json");
     const data = isJson ? await response.json() : await response.text();
-
     if (!response.ok) {
       if (isJson && data.errors !== null) {
         //@ts-ignore
@@ -75,7 +76,7 @@ class ApiClient {
   }
 
   @DefaultCatch(err => Err(err))
-  public static async getAuthUser<T>(type: 'parent'|'child', token?: string): Promise<Result<UserResponse<T>, Error>> {
+  public static async getAuthUser<T>(type: 'parent' | 'child', token?: string): Promise<Result<UserResponse<T>, Error>> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
@@ -102,9 +103,26 @@ class ApiClient {
         "Content-Type": "application/json",
       },
     });
+    console.log(response)
     const result = await this.handleResponse<AnswerByExercise[]>(response);
+    console.log(result.isErr());
     return result;
   }
+
+  @DefaultCatch(err => Err(err))
+  public static async sendAnswer(body: ExerciseBody): Promise<Result<SendAnswerResponse, Error>> {
+    const response = await fetch(`${SERVER_ENDPOINT}/api/send-exercise`, {
+      method: "POST",
+      body: JSON.stringify(body),
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await this.handleResponse<SendAnswerResponse>(response);
+    return result;
+  }
+
 }
 
 export default ApiClient;
