@@ -4,7 +4,6 @@ import { ChildUser, LoggedParent } from "@/lib/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useState, useEffect } from 'react'
-import { None, Some, Option } from "trentim-react-sdk";
 
 type State = {
   userType: "parent" | "child" | null;

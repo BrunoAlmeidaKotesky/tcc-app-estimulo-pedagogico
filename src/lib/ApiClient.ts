@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { LoggedParent, UserLoginResponse, UserResponse } from "./types";
-import { Ok, Err, DefaultCatch } from "trentim-react-sdk/helpers";
-import type { Result } from 'trentim-react-sdk/models';
+import { Ok, Err, DefaultCatch, Result } from "bakutils-catcher";
 
 const SERVER_ENDPOINT = process.env.SERVER_ENDPOINT || "http://localhost:3000";
 
