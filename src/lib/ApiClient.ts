@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { LoggedParent, UserLoginResponse, UserResponse } from "./types";
+import { AnswerByExercise, LoggedParent, UserLoginResponse, UserResponse } from "./types";
 import { Ok, Err, DefaultCatch, Result } from "bakutils-catcher";
 
 const SERVER_ENDPOINT = process.env.SERVER_ENDPOINT || "http://localhost:3000";
@@ -90,6 +90,19 @@ class ApiClient {
       headers,
     });
     const result = await this.handleResponse<UserResponse<T>>(response);
+    return result;
+  }
+
+  @DefaultCatch(err => Err(err))
+  public static async getDailyExercises(): Promise<Result<AnswerByExercise[], Error>> {
+    const response = await fetch(`${SERVER_ENDPOINT}/api/get-exercises`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await this.handleResponse<AnswerByExercise[]>(response);
     return result;
   }
 }
