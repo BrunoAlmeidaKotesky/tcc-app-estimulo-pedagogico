@@ -36,8 +36,6 @@ export default function RegisterForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitSuccessful]);
 
-  console.log(errors);
-
   async function registerUser(credentials: RegisterUserInput) {
     store?.setRequestLoading(true);
     const response = await ApiClient.registerUser(JSON.stringify(credentials));

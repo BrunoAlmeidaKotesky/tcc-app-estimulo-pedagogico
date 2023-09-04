@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import ApiClient from "./ApiClient";
 import useStore, { useAppStore } from "@/store";
 import { ChildUser, LoggedParent } from "./types";
-import { None, Option, Some } from "trentim-react-sdk";
+import { None, Some, Option } from "bakutils-catcher";
 import {match} from 'ts-pattern';
 
 export default function useSession(): Option<LoggedParent | ChildUser> {

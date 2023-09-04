@@ -42,7 +42,6 @@ export default function LoginForm() {
     store?.setRequestLoading(true);
     const res = await ApiClient.loginParentUser(JSON.stringify(credentials));
     if (res.isErr()) {
-      console.log(res.error);
       store?.setRequestLoading(false);
       return toast.error(res.error.message);
     }

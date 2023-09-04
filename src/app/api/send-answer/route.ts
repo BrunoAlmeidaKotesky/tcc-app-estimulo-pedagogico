@@ -8,12 +8,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const body = (await req.json()) as ExerciseBody;
     const { answerId, childId, exerciseId } = body;
-    const rightAnswer = await prisma.exerciseRightAnswer.findFirst({
+    const correctAnswer = await prisma.answer.findFirst({
       where: {
-        exerciseId
+        exerciseId,
+        isCorrect: true
       },
       select: {
-        answerId: true,
+        id: true,
         exercise: {
           select: {
             difficulty: true
@@ -21,11 +22,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         }
       }
     });
-    if (!rightAnswer)
+
+    if (!correctAnswer)
       return getErrorResponse(401, "Não foi encontrado uma resposta correta cadastrada.");
-    const rightAnswerId = rightAnswer?.answerId;
-    const difficulty = rightAnswer?.exercise?.difficulty;
-    const isRightAnswer = answerId === rightAnswerId;
+
+    const difficulty = correctAnswer.exercise.difficulty;
+    const isRightAnswer = answerId === correctAnswer.id;
     const createdAnswer = await prisma.answeredExercise.create({
       data: {
         answerId,
@@ -63,7 +65,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     return new NextResponse(
       JSON.stringify({
-        status: "success",
         isRightAnswer,
         newPoints
       }),

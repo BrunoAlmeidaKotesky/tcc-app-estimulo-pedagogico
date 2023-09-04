@@ -1,4 +1,4 @@
-import type { Answer, Exercise } from "@prisma/client";
+import type { Answer, Child, Exercise } from "@prisma/client";
 
 export interface FilteredUser {
   id: string;
@@ -27,11 +27,7 @@ export interface UserLoginResponse {
   userType: UserType;
 }
 
-export interface ChildUser {
-  name: string;
-  age: number;
-  //Adicionar mais campos aqui conforme necessário.
-}
+export type ChildUser = Pick<Child, 'id' | 'name' | 'points' | 'age'>;
 
 export interface ExerciseBody {
   exerciseId: string;
@@ -61,3 +57,10 @@ export interface AnswerByExercise {
   exercise: Exercise;
   answers: Answer[];
 }
+
+export interface SendAnswerResponse {
+  isRightAnswer: boolean;
+  newPoints: number;
+}
+
+export type Updater<T> = (value: T | ((prev: T) => T)) => void;

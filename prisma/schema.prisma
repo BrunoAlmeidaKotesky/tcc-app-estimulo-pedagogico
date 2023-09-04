@@ -49,28 +49,27 @@ model Subject {
 }
 
 model Exercise {
-  id                  String                @id @unique @default(uuid())
-  title               String
-  description         String
-  subject             Subject               @relation(fields: [subjectId], references: [id])
-  subjectId           Int
-  difficulty          Int                   
-  createdAt           DateTime?             @default(now())
-  updatedAt           DateTime?             @updatedAt
-  Answer              Answer[]
-  AnsweredExercise    AnsweredExercise[]
-  ExerciseRightAnswer ExerciseRightAnswer[]
+  id               String             @id @unique @default(uuid())
+  title            String
+  description      String
+  subject          Subject            @relation(fields: [subjectId], references: [id])
+  subjectId        Int
+  difficulty       Int
+  createdAt        DateTime?          @default(now())
+  updatedAt        DateTime?          @updatedAt
+  Answer           Answer[]
+  AnsweredExercise AnsweredExercise[]
 }
 
 model Answer {
-  id                  String                @id @unique @default(uuid())
-  exercise            Exercise              @relation(fields: [exerciseId], references: [id])
-  exerciseId          String
-  answer              String
-  createdAt           DateTime?             @default(now())
-  updatedAt           DateTime?             @updatedAt
-  AnsweredExercise    AnsweredExercise[]
-  ExerciseRightAnswer ExerciseRightAnswer[]
+  id               String             @id @unique @default(uuid())
+  exercise         Exercise           @relation(fields: [exerciseId], references: [id])
+  exerciseId       String
+  answer           String
+  isCorrect        Boolean            @default(false)
+  createdAt        DateTime?          @default(now())
+  updatedAt        DateTime?          @updatedAt
+  AnsweredExercise AnsweredExercise[]
 }
 
 model AnsweredExercise {
@@ -79,16 +78,6 @@ model AnsweredExercise {
   exerciseId String
   child      Child     @relation(fields: [childId], references: [id])
   childId    String
-  answer     Answer    @relation(fields: [answerId], references: [id])
-  answerId   String
-  createdAt  DateTime? @default(now())
-  updatedAt  DateTime? @updatedAt
-}
-
-model ExerciseRightAnswer {
-  id         String    @id @unique @default(uuid())
-  exercise   Exercise  @relation(fields: [exerciseId], references: [id])
-  exerciseId String
   answer     Answer    @relation(fields: [answerId], references: [id])
   answerId   String
   createdAt  DateTime? @default(now())

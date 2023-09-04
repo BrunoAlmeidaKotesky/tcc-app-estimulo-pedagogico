@@ -41,7 +41,6 @@ export function ChildLogin() {
         store?.setRequestLoading(true);
         const res = await ApiClient.loginChildUser(accessCode, name);
         if (res.isErr()) {
-            console.log(res.error);
             store?.setRequestLoading(false);
             return toast.error(res.error.message);
         }
