@@ -47,7 +47,6 @@ Table Exercise {
   updatedAt DateTime
   Answer Answer [not null]
   AnsweredExercise AnsweredExercise [not null]
-  ExerciseRightAnswer ExerciseRightAnswer [not null]
 }
 
 Table Answer {
@@ -55,10 +54,10 @@ Table Answer {
   exercise Exercise [not null]
   exerciseId String [not null]
   answer String [not null]
+  isCorrect Boolean [not null, default: false]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
   AnsweredExercise AnsweredExercise [not null]
-  ExerciseRightAnswer ExerciseRightAnswer [not null]
 }
 
 Table AnsweredExercise {
@@ -67,16 +66,6 @@ Table AnsweredExercise {
   exerciseId String [not null]
   child Child [not null]
   childId String [not null]
-  answer Answer [not null]
-  answerId String [not null]
-  createdAt DateTime [default: `now()`]
-  updatedAt DateTime
-}
-
-Table ExerciseRightAnswer {
-  id String [pk]
-  exercise Exercise [not null]
-  exerciseId String [not null]
   answer Answer [not null]
   answerId String [not null]
   createdAt DateTime [default: `now()`]
@@ -114,10 +103,6 @@ Ref: AnsweredExercise.exerciseId > Exercise.id
 Ref: AnsweredExercise.childId > Child.id
 
 Ref: AnsweredExercise.answerId > Answer.id
-
-Ref: ExerciseRightAnswer.exerciseId > Exercise.id
-
-Ref: ExerciseRightAnswer.answerId > Answer.id
 
 Ref: EarnedBadge.childId > Child.id
 
