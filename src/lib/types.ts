@@ -55,7 +55,7 @@ export interface BadgeResponse {
 
 export interface AnswerByExercise {
   exercise: Exercise;
-  answers: Answer[];
+  answers: Omit<Answer, 'isCorrect'>[];
 }
 
 export interface SendAnswerResponse {

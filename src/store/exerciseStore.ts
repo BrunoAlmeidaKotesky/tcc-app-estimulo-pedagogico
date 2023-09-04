@@ -2,10 +2,9 @@
 
 import { Updater } from "@/lib/types";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 type State = {
-    isExerciseAvaibleToday: boolean;
+    isExerciseAvailableToday: boolean;
     curExerciseIdx: number;
 };
 
@@ -16,17 +15,13 @@ type Actions = {
 
 export type ExerciseStore = State & Actions;
 
-export const useExerciseStore = create(
-    persist<ExerciseStore>(
-        (set) => ({
-            isExerciseAvaibleToday: false,
-            setIsExerciseAvailable: (v) => set((state) => ({ ...state, isExerciseAvaibleToday: v })),
-            curExerciseIdx: 0,
-            setCurrentExerciseIdx: (v) => set((state) => {
-                if (typeof v === 'function')
-                    return { ...state, curExerciseIdx: v(state.curExerciseIdx) };
-                return { ...state, curExerciseIdx: v };
-            }),
-        }),
-        { name: 'app-storage-exercises' })
-);
+export const useExerciseStore = create<ExerciseStore>((set) => ({
+    isExerciseAvailableToday: false,
+    setIsExerciseAvailable: (v) => set((state) => ({ ...state, isExerciseAvailableToday: v })),
+    curExerciseIdx: 0,
+    setCurrentExerciseIdx: (v) => set((state) => {
+        if (typeof v === 'function')
+            return { ...state, curExerciseIdx: v(state.curExerciseIdx) };
+        return { ...state, curExerciseIdx: v };
+    }),
+}));

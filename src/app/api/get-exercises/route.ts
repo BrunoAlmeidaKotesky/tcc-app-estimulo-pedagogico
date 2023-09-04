@@ -5,6 +5,12 @@ import { AnswerByExercise } from "@/lib/types";
 import { Answer, Exercise } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
+
+function removeDuplicatedId(exs: Exercise[]): Exercise[] {
+    const idsSet = Array.from(new Set(exs.map(e => e.id)));
+    return idsSet.map(id => exs.find(e => e?.id === id)!).filter(e => e !== undefined);
+}
+
 async function getInitialExercises(
     childId: string,
     numberOfAnsweredEx: number,
@@ -56,7 +62,7 @@ async function getInitialExercises(
         exercisesToGet.push(...additionalExercises);
     }
 
-    return exercisesToGet;
+    return removeDuplicatedId(exercisesToGet);
 }
 
 const getRecommendedExercises = async (childId: string): Promise<Exercise[]> => {
@@ -137,23 +143,29 @@ const getRecommendedExercises = async (childId: string): Promise<Exercise[]> => 
 
         exercisesToGet = [...exercisesToGet, ...additionalExercises];
     }
-
-    return exercisesToGet;
+    return removeDuplicatedId(exercisesToGet);
 }
 
 async function getExercisesAnswers(exercises: Exercise[]): Promise<AnswerByExercise[]> {
-    const answersToExercises: Answer[] = await prisma.answer.findMany({
+    const answersToExercises: Omit<Answer, 'isCorrect'>[] = await prisma.answer.findMany({
         where: {
             exerciseId: { in: exercises.map(e => e.id) }
         },
+        select: {
+            answer: true,
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            exerciseId: true
+        }
     });
-    if(!answersToExercises?.length)
+    if (!answersToExercises?.length)
         throw new Error("Não foi possível localizar as respostas das questões");
 
     const answerByExercise: AnswerByExercise[] = [];
     for (const exercise of exercises) {
         const answers = answersToExercises.filter(a => a.exerciseId === exercise.id);
-        if(answers.length > 0)
+        if (answers.length > 0)
             answerByExercise.push({ exercise, answers });
     }
     return answerByExercise;
@@ -174,12 +186,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             exercises = await getInitialExercises(childId, numberOfAnsweredEx, answeredExerciseIds);
         else
             exercises = await getRecommendedExercises(childId);
-        if(exercises.length === 0)
+        if (exercises.length === 0)
             return getErrorResponse(404, "Não foi possível localizar os exercícios");
         const exercisesWithAnswer = await getExercisesAnswers(exercises);
-        if(exercisesWithAnswer.length === 0)
+        if (exercisesWithAnswer.length === 0)
             return getErrorResponse(404, "Não foi possível localizar as respostas das questões");
-        return new NextResponse(JSON.stringify({exercises: exercisesWithAnswer}), {
+        return new NextResponse(JSON.stringify(exercisesWithAnswer), {
             status: 200, headers: { "Content-Type": "application/json" }
         });
     } catch (e: any) {

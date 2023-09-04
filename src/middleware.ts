@@ -23,12 +23,13 @@ export async function middleware(req: NextRequest) {
 
   if (
     !token &&
-    (req.nextUrl.pathname.startsWith("/api/users") ||
-      req.nextUrl.pathname.startsWith("/api/auth/logout"))
+    (req.nextUrl.pathname.startsWith("/api/users") //||
+      //req.nextUrl.pathname.startsWith("/api/auth/logout")
+    )
   ) {
     return getErrorResponse(
       401,
-      "Você não está logado, por favor forneça um token de acesso."
+      "Você não está logado, por favor forneça um token de acessoAAAAA."
     );
   }
 
