@@ -9,7 +9,7 @@ import { Child } from "@prisma/client";
 import { hash } from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
-import { Catch, DefaultCatch } from "trentim-react-sdk/helpers";
+import { Catch, DefaultCatch } from "bakutils-catcher";
 
 type CreateChildParams = {
   age: number;

@@ -175,7 +175,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         else
             exercises = await getRecommendedExercises(childId);
         if(exercises.length === 0)
-            return getErrorResponse(404, "Não foi possível localizar os exercicíos");
+            return getErrorResponse(404, "Não foi possível localizar os exercícios");
         const exercisesWithAnswer = await getExercisesAnswers(exercises);
         if(exercisesWithAnswer.length === 0)
             return getErrorResponse(404, "Não foi possível localizar as respostas das questões");

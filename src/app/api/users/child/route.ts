@@ -19,7 +19,9 @@ export async function GET(req: NextRequest) {
         return getErrorResponse(404, "Usuário não encontrado.");
     const loggedChild: ChildUser = {
         age: child.age,
-        name: child.name
+        name: child.name,
+        id: child.id,
+        points: child.points
     }
 
     return NextResponse.json({

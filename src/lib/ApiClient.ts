@@ -1,22 +1,27 @@
 import "reflect-metadata";
 import type { AnswerByExercise, ExerciseBody, LoggedParent, SendAnswerResponse, UserLoginResponse, UserResponse } from "./types";
-import { Ok, Err, DefaultCatch } from "trentim-react-sdk/helpers";
-import { Result } from "trentim-react-sdk/dist/models/index";
+import { Ok, Err, DefaultCatch, Result } from "bakutils-catcher";
 
 const SERVER_ENDPOINT = process.env.SERVER_ENDPOINT || "http://localhost:3000";
+const headers: Record<string, string> = {
+  "Content-Type": "application/json",
+}
 
 /**Esse código ta meio que muito repetitivo, dá pra reduzir */
 class ApiClient {
 
-  private static async handleResponse<T>(response: Response): Promise<Result<T, Error>> {
+  public static async handleResponse<T>(response: Response): Promise<Result<T, Error>> {
     const contentType = response.headers.get("Content-Type") || "";
     const isJson = contentType.includes("application/json");
     const data = isJson ? await response.json() : await response.text();
     if (!response.ok) {
-      if (isJson && data.errors !== null) {
+      console.log(data, response);
+      if (isJson && data.errors !== null && data.errors !== undefined) {
+        console.log("Caiu no erro new Error(data.errors)");
         //@ts-ignore
-        return Err(JSON.stringify(data.errors));
+        return Err(new Error(data.errors));
       }
+      console.log("Caiu no erro data.message || response.statusText");
       return Err(new Error(data.message || response.statusText));
     }
     return Ok(data as T);
@@ -27,9 +32,7 @@ class ApiClient {
     const response = await fetch(`${SERVER_ENDPOINT}/api/auth/register`, {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       body: credentials,
     });
     return this.handleResponse<UserResponse<LoggedParent>>(response);
@@ -40,9 +43,7 @@ class ApiClient {
     const response = await fetch(`${SERVER_ENDPOINT}/api/auth/parent-login`, {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       body: credentials,
     });
     const result = await this.handleResponse<UserLoginResponse>(response);
@@ -54,9 +55,7 @@ class ApiClient {
     const response = await fetch(`${SERVER_ENDPOINT}/api/auth/child-login`, {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify({ accessCode, name }),
     });
     const result = await this.handleResponse<UserLoginResponse>(response);
@@ -68,19 +67,13 @@ class ApiClient {
     const response = await fetch(`${SERVER_ENDPOINT}/api/auth/logout`, {
       method: "GET",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
     });
     return this.handleResponse<void>(response);
   }
 
   @DefaultCatch(err => Err(err))
   public static async getAuthUser<T>(type: 'parent' | 'child', token?: string): Promise<Result<UserResponse<T>, Error>> {
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
-
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
@@ -95,17 +88,18 @@ class ApiClient {
   }
 
   @DefaultCatch(err => Err(err))
-  public static async getDailyExercises(): Promise<Result<AnswerByExercise[], Error>> {
+  public static async getDailyExercises(token: string): Promise<Result<AnswerByExercise[], Error>> {
+    console.log(token);
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
     const response = await fetch(`${SERVER_ENDPOINT}/api/get-exercises`, {
       method: "GET",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      cache: 'no-store',
+      headers
     });
-    console.log(response)
     const result = await this.handleResponse<AnswerByExercise[]>(response);
-    console.log(result.isErr());
     return result;
   }
 
@@ -115,9 +109,7 @@ class ApiClient {
       method: "POST",
       body: JSON.stringify(body),
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers
     });
     const result = await this.handleResponse<SendAnswerResponse>(response);
     return result;
