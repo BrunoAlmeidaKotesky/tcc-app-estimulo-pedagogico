@@ -8,8 +8,11 @@ export default async function ProfilePage() {
   const cookieStore = cookies();
   const token = cookieStore?.get("token");
 
-  const response = await ApiClient.getAuthUser<LoggedParent>('parent', token?.value);
-  if (response.isErr()) return <div>Erro</div>
+  const response = await ApiClient.getAuthUser<LoggedParent>(
+    "parent",
+    token?.value
+  );
+  if (response.isErr()) return <div>Erro</div>;
   const data = response.unwrap().data;
 
   return (
@@ -25,17 +28,16 @@ export default async function ProfilePage() {
               <p className="mb-3">Id: {data.user.id}</p>
               <p className="mb-3">Nome: {data.user.name}</p>
               <p className="mb-3">Email: {data.user.email}</p>
-              <div className="mb-3">Códigos de acesso:
+              <div className="mb-3">
+                Códigos de acesso:
                 <ul>
-                  {data.childAccessCodes.map(({ accessCode, name }) =>
+                  {data.childAccessCodes.map(({ accessCode, name }) => (
                     <li key={accessCode}>
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        <strong>{accessCode}</strong>
-                        - 
-                        <span>{name}</span>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <strong>{accessCode}</strong>-<span>{name}</span>
                       </div>
                     </li>
-                  )}
+                  ))}
                 </ul>
               </div>
             </div>

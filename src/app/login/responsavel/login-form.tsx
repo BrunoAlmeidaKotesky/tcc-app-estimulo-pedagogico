@@ -1,6 +1,9 @@
 "use client";
 
-import { ParentLoginInput, ParentUserSchema } from "@/lib/validations/user.schema";
+import {
+  ParentLoginInput,
+  ParentUserSchema,
+} from "@/lib/validations/user.schema";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
@@ -13,7 +16,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const store = useStore(useAppStore, s => s);
+  const store = useStore(useAppStore, (s) => s);
   const router = useRouter();
 
   const methods = useForm<ParentLoginInput>({
@@ -48,10 +51,11 @@ export default function LoginForm() {
     toast.success("Login realizado com sucesso!");
     store?.setRequestLoading(false);
     store?.setUserType(res.unwrap().userType);
-    return router.push("/perfil");
+    return router.push("/");
   }
 
-  const onSubmitHandler: SubmitHandler<ParentLoginInput> = (values) => loginUser(values);
+  const onSubmitHandler: SubmitHandler<ParentLoginInput> = (values) =>
+    loginUser(values);
   return (
     <FormProvider {...methods}>
       <form
@@ -62,7 +66,8 @@ export default function LoginForm() {
         <FormInput label="Senha" name="password" type="password" />
         <LoadingButton
           loading={store?.requestLoading || false}
-          textColor="text-ct-blue-600">
+          textColor="text-ct-blue-600"
+        >
           Entrar
         </LoadingButton>
         <span className="block">
