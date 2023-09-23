@@ -7,7 +7,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("LOGIN DO FILHO");
     const { accessCode, name } = (await req.json()) as {
       accessCode: string;
       name: string;
@@ -16,10 +15,9 @@ export async function POST(req: NextRequest) {
     const childWithTheSameName = await prisma.child.findMany({
       where: { name },
     });
-    console.log(name);
+
     if (childWithTheSameName.length === 0)
       return getErrorResponse(401, "Nenhum usuário encontrado com este nome.");
-    console.log(childWithTheSameName);
 
     let matchedChild: Child | null = null;
     for (const child of childWithTheSameName) {
