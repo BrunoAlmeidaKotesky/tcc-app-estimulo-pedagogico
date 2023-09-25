@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Grid, MenuItem, Select } from "@mui/material";
 import { BadgeCard } from "./BadgeCard";
 import { BadgeData, BadgeResponse } from "@/lib/types";
-import ApiClient from "@/lib/ApiClient";
 
 interface BadgeListProps {
   badgeResponse: BadgeResponse;
@@ -43,14 +42,6 @@ export const BadgesList: React.FC<BadgeListProps> = ({
     }
   };
 
-  const handleUpdateBadges = async () => {
-    const badgesResponse = await ApiClient.grantBadges(token);
-    if (badgesResponse.isErr())
-      return console.error("Erro ao atualizar medalhas");
-
-    const badgesData = badgesResponse.unwrap();
-  };
-
   return (
     <div
       style={{
@@ -60,7 +51,6 @@ export const BadgesList: React.FC<BadgeListProps> = ({
         flexDirection: "column",
       }}
     >
-      <button onClick={handleUpdateBadges}>Atualizar medalhas</button>
       <div
         style={{
           display: "flex",

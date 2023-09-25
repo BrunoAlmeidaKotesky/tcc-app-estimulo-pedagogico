@@ -9,6 +9,7 @@ import type {
   UserResponse,
 } from "./types";
 import { Ok, Err, DefaultCatch, Result } from "bakutils-catcher";
+import { Badge } from "@prisma/client";
 
 const SERVER_ENDPOINT = process.env.SERVER_ENDPOINT || "http://localhost:3000";
 const headers: Record<string, string> = {
@@ -144,9 +145,14 @@ class ApiClient {
 
   @DefaultCatch((err) => Err(err))
   public static async sendAnswer(
-    body: ExerciseBody
+    body: ExerciseBody,
+    token?: string
   ): Promise<Result<SendAnswerResponse, Error>> {
-    const response = await fetch(`${SERVER_ENDPOINT}/api/send-exercise`, {
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${SERVER_ENDPOINT}/api/send-answer`, {
       method: "POST",
       body: JSON.stringify(body),
       credentials: "include",
@@ -159,7 +165,9 @@ class ApiClient {
   @DefaultCatch((err) => Err(err))
   public static async grantBadges(
     token?: string
-  ): Promise<Result<string[], Error>> {
+  ): Promise<
+    Result<{ status: string; message: string; badges: Badge[] }, Error>
+  > {
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
@@ -171,7 +179,11 @@ class ApiClient {
       headers,
     });
 
-    const result = await this.handleResponse<string[]>(response);
+    const result = await this.handleResponse<{
+      status: string;
+      message: string;
+      badges: Badge[];
+    }>(response);
 
     return result;
   }

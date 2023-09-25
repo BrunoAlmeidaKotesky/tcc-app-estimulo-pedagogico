@@ -6,11 +6,11 @@ import { Badge } from "@prisma/client";
 function checkPoints(
   childPoints: number,
   allBadges: Badge[],
-  earnedBadges: string[]
-): string[] {
+  earnedBadges: Badge[]
+): Badge[] {
   const pointBadges = allBadges.filter((b) => b.criteria === "points");
   for (let badge of pointBadges) {
-    if (childPoints >= badge.threshold) earnedBadges.push(badge.id);
+    if (childPoints >= badge.threshold) earnedBadges.push(badge);
   }
   return earnedBadges;
 }
@@ -18,8 +18,8 @@ function checkPoints(
 async function checkDifficulty(
   childId: string,
   allBadges: Badge[],
-  earnedBadges: string[]
-): Promise<string[]> {
+  earnedBadges: Badge[]
+): Promise<Badge[]> {
   const answeredExercises = await prisma.answeredExercise.findMany({
     where: { childId },
     include: { exercise: true },
@@ -38,7 +38,7 @@ async function checkDifficulty(
   for (let badge of difficultyBadges) {
     const requiredDifficulty = parseInt(badge.criteria.split("_")[1], 10);
     if (exercisesByDifficulty[requiredDifficulty] >= badge.threshold)
-      earnedBadges.push(badge.id);
+      earnedBadges.push(badge);
   }
 
   return earnedBadges;
@@ -47,8 +47,8 @@ async function checkDifficulty(
 async function checkSubject(
   childId: string,
   allBadges: Badge[],
-  earnedBadges: string[]
-): Promise<string[]> {
+  earnedBadges: Badge[]
+): Promise<Badge[]> {
   const answeredExercises = await prisma.answeredExercise.findMany({
     where: { childId },
     include: { exercise: { include: { subject: true } } },
@@ -67,7 +67,7 @@ async function checkSubject(
   for (let badge of subjectBadges) {
     const requiredSubject = parseInt(badge.criteria.split("_")[1], 10);
     if (exercisesBySubject[requiredSubject] >= badge.threshold) {
-      earnedBadges.push(badge.id);
+      earnedBadges.push(badge);
     }
   }
 
@@ -85,7 +85,7 @@ async function checkForBadges(childId: string) {
   const allBadges = await prisma.badge.findMany();
 
   // Inicialize uma lista para guardar os emblemas conquistados
-  let earnedBadges: string[] = [];
+  let earnedBadges: Badge[] = [];
 
   // 1. Verifique os pontos
   earnedBadges = checkPoints(child?.points!, allBadges, earnedBadges);
@@ -103,14 +103,18 @@ async function checkForBadges(childId: string) {
   });
   const alreadyEarnedBadgeIds = alreadyEarnedBadges.map((e) => e.badgeId);
 
+  const badgesResponse: Badge[] = [];
   // Atualize o banco de dados apenas com os novos emblemas conquistados
-  for (let badgeId of earnedBadges) {
-    if (!alreadyEarnedBadgeIds.includes(badgeId)) {
+  for (let badge of earnedBadges) {
+    if (!alreadyEarnedBadgeIds.find((badgeId) => badgeId === badge.id)) {
       await prisma.earnedBadge.create({
-        data: { childId, badgeId },
+        data: { childId, badgeId: badge.id },
       });
+      badgesResponse.push(badge);
     }
   }
+
+  return badgesResponse;
 }
 
 /**Temos que descobrir onde vamos chamar essa endpoint, para evitar que seja chamada muitas vezes */
@@ -123,11 +127,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         "Você não está logado, por favor forneça um token de acesso."
       );
 
-    await checkForBadges(childId);
+    const earnedBadges = await checkForBadges(childId);
     return new NextResponse(
       JSON.stringify({
         status: "success",
         message: "Medalhas atualizadas com sucesso!",
+        badges: earnedBadges,
       }),
       {
         status: 200,

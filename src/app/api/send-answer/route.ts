@@ -6,8 +6,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
+    const childId = req.headers.get("X-USER-ID");
+    if (!childId)
+      return getErrorResponse(
+        401,
+        "Você não está logado, por favor forneça um token de acesso."
+      );
     const body = (await req.json()) as ExerciseBody;
-    const { answerId, childId, exerciseId } = body;
+    const { answerId, exerciseId } = body;
     const correctAnswer = await prisma.answer.findFirst({
       where: {
         exerciseId,
@@ -45,11 +51,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         id: childId,
       },
     });
-    if (!child)
-      return getErrorResponse(
-        401,
-        "Não foi encontrado um usuário com esse id."
-      );
 
     const childPoints = child?.points || 0;
     const { increase, decrease } = POINTS_MAP.get(

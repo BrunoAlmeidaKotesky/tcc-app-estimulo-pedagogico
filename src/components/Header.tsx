@@ -11,7 +11,7 @@ import { HeaderLink } from "./HeaderLink";
 import { useMemo } from "react";
 
 const Header = () => {
-  const store = useStore(useAppStore, s => s);
+  const store = useStore(useAppStore, (s) => s);
   //useSession();
   const router = useRouter();
 
@@ -23,26 +23,34 @@ const Header = () => {
       return toast.error("Erro ao fazer logout");
     }
     store?.reset(true);
-    router.push('/login');
+    router.push("/login");
     store?.setRequestLoading(false);
   };
 
   const links = useMemo(() => {
     if (store?.userType === null) {
-      return(<>
-        <HeaderLink text="Cadastro" href="/cadastro" />
-        <HeaderLink text="Login" href="/login" />
-      </>);
-    } else if (store?.userType === 'parent') {
-      return(<>
-        <HeaderLink text="Perfil" href="/perfil" />
-        <HeaderLink text="Sair" onClick={handleLogout} />
-      </>);
-    } else if(store?.userType === 'child') {
-      return(<>
-        <HeaderLink text="Questionário" href="/questionario" />
-        <HeaderLink text="Sair" onClick={handleLogout} />
-      </>);
+      return (
+        <>
+          <HeaderLink text="Cadastro" href="/cadastro" />
+          <HeaderLink text="Login" href="/login" />
+        </>
+      );
+    } else if (store?.userType === "parent") {
+      return (
+        <>
+          <HeaderLink text="Perfil" href="/perfil" />
+          <HeaderLink text="Dashboard" href="dashboard" />
+          <HeaderLink text="Sair" onClick={handleLogout} />
+        </>
+      );
+    } else if (store?.userType === "child") {
+      return (
+        <>
+          <HeaderLink text="Questionário" href="/questionario" />
+          <HeaderLink text="Medalhas" href="/medalhas" />
+          <HeaderLink text="Sair" onClick={handleLogout} />
+        </>
+      );
     }
     return null;
   }, [store?.userType]);

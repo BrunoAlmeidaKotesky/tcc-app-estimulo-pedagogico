@@ -9,7 +9,7 @@ export interface FilteredUser {
   updatedAt: string;
 }
 
-export type UserType = 'parent' | 'child';
+export type UserType = "parent" | "child";
 export interface LoggedParent {
   user: FilteredUser;
   childAccessCodes: { name: string; accessCode: string }[];
@@ -27,11 +27,10 @@ export interface UserLoginResponse {
   userType: UserType;
 }
 
-export type ChildUser = Pick<Child, 'id' | 'name' | 'points' | 'age'>;
+export type ChildUser = Pick<Child, "id" | "name" | "points" | "age">;
 
 export interface ExerciseBody {
   exerciseId: string;
-  childId: string;
   answerId: string;
 }
 
@@ -42,10 +41,10 @@ export interface BadgeBody {
 export type BadgeData = {
   badgeId: string;
   badge: {
-      name: string;
-      icon: string | null;
-      criteria: string;
-      threshold: number;
+    name: string;
+    icon: string | null;
+    criteria: string;
+    threshold: number;
   };
 };
 export interface BadgeResponse {
@@ -55,7 +54,7 @@ export interface BadgeResponse {
 
 export interface AnswerByExercise {
   exercise: Exercise;
-  answers: Omit<Answer, 'isCorrect'>[];
+  answers: Omit<Answer, "isCorrect">[];
 }
 
 export interface SendAnswerResponse {
