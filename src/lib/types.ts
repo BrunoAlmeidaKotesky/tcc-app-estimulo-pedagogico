@@ -63,3 +63,32 @@ export interface SendAnswerResponse {
 }
 
 export type Updater<T> = (value: T | ((prev: T) => T)) => void;
+
+export type BaseDataItem = {
+  isCorrect: boolean;
+  exerciseId: string;
+};
+
+export type DataByDifficulty = BaseDataItem & {
+  subjectName: string;
+};
+export type DataBySubject = BaseDataItem & {
+  difficulty: string;
+};
+
+export type ExerciseDataItem = DataByDifficulty | DataBySubject;
+export type GroupedUnion = DataByDifficulty & DataBySubject;
+export type GroupedByDifficulty = {
+  [key: string]: ExerciseDataItem[];
+};
+
+export type GroupedBySubject = {
+  [key: string]: ExerciseDataItem[];
+};
+
+export type DashboardDataItem = {
+  name: string;
+  points: number;
+  exercisesGroupedBySubject: GroupedBySubject;
+  exercisesGroupedByDifficulty: GroupedByDifficulty;
+};

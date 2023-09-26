@@ -2,6 +2,7 @@ import "reflect-metadata";
 import type {
   AnswerByExercise,
   BadgeResponse,
+  DashboardDataItem,
   ExerciseBody,
   LoggedParent,
   SendAnswerResponse,
@@ -95,6 +96,7 @@ class ApiClient {
   ): Promise<Result<UserResponse<T>, Error>> {
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
+      console.log("Setting token", token);
     }
 
     const response = await fetch(`${SERVER_ENDPOINT}/api/users/${type}`, {
@@ -185,6 +187,21 @@ class ApiClient {
       badges: Badge[];
     }>(response);
 
+    return result;
+  }
+
+  @DefaultCatch((err) => Err(err))
+  public static async getDashboardData(token?: string) {
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    const response = await fetch(`${SERVER_ENDPOINT}/api/get-dashboards-data`, {
+      method: "GET",
+      credentials: "include",
+      headers,
+    });
+
+    const result = await this.handleResponse<DashboardDataItem[]>(response);
     return result;
   }
 }
