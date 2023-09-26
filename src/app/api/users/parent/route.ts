@@ -13,14 +13,10 @@ export async function GET(req: NextRequest) {
   }
 
   const user = await prisma.parent.findUnique({ where: { id: userId } });
-  const childAccessCodes = await prisma.child.findMany({
-    where: { parentId: userId },
-    select: {name: true, accessCode: true}
-  });
 
   return NextResponse.json({
     status: "success",
-    data: { user: { ...user, password: undefined }, childAccessCodes },
-    userType: 'parent'
+    data: { user: { ...user, password: undefined } },
+    userType: "parent",
   });
 }

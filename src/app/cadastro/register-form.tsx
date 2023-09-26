@@ -11,7 +11,7 @@ import ApiClient from "@/lib/ApiClient";
 import FormInput from "@/components/FormInput";
 import Link from "next/link";
 import { LoadingButton } from "@/components/LoadingButton";
-import useStore, {useAppStore} from "@/store";
+import useStore, { useAppStore } from "@/store";
 import { handleApiError } from "@/lib/helpers";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -19,7 +19,7 @@ import { ChildInput } from "@/components/ChildInput";
 import { AccessCodeToast } from "@/components/AccessCodeToast";
 
 export default function RegisterForm() {
-  const store = useStore(useAppStore, s => s);
+  const store = useStore(useAppStore, (s) => s);
   const router = useRouter();
   const methods = useForm<RegisterUserInput>({
     resolver: zodResolver(RegisterUserSchema),
@@ -47,13 +47,22 @@ export default function RegisterForm() {
     const resData = response.unwrap();
     const user = resData.data;
     store?.setParentUser(user);
-    toast(({id}) => <AccessCodeToast codes={user.childAccessCodes} onClose={() => toast.dismiss(id)}/>, {duration: Infinity});
+    toast(
+      ({ id }) => (
+        <AccessCodeToast
+          codes={user.childAccessCodes}
+          onClose={() => toast.dismiss(id)}
+        />
+      ),
+      { duration: Infinity }
+    );
     store?.setRequestLoading(false);
     store?.setUserType(resData.userType);
     return router.push("/login");
   }
 
-  const onSubmitHandler: SubmitHandler<RegisterUserInput> = (values) => registerUser(values);
+  const onSubmitHandler: SubmitHandler<RegisterUserInput> = (values) =>
+    registerUser(values);
 
   return (
     <FormProvider {...methods}>
@@ -72,11 +81,14 @@ export default function RegisterForm() {
         <ChildInput />
         <span className="block">
           Já possui uma conta?{" "}
-          <Link href="/login" className="text-ct-blue-600">
+          <Link href="/login" className="text-green-600">
             Faça o login aqui
           </Link>
         </span>
-        <LoadingButton loading={store?.requestLoading || false} textColor="text-ct-blue-600">
+        <LoadingButton
+          loading={store?.requestLoading || false}
+          textColor="text-green-600"
+        >
           Cadastrar
         </LoadingButton>
       </form>

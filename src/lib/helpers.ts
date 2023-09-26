@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import toast from "react-hot-toast";
+import { DashboardDataItem } from "./types";
 
 type EnvVariableKey = "JWT_SECRET_KEY" | "JWT_EXPIRES_IN";
 
@@ -60,4 +61,54 @@ export function handleApiError(error: Error): void {
   } catch (error: any) {
     toast.error(error);
   }
+}
+
+export const extractDataBySubject = (data: DashboardDataItem[]) => {
+  let result: { name: string; value: number }[] = [];
+
+  data.forEach((item) => {
+    for (let subject in item.exercisesGroupedBySubject) {
+      const existingSubject = result.find((res) => res.name === subject);
+      if (existingSubject) {
+        existingSubject.value += item.exercisesGroupedBySubject[subject].length;
+      } else {
+        result.push({
+          name: subject,
+          value: item.exercisesGroupedBySubject[subject].length,
+        });
+      }
+    }
+  });
+
+  return result;
+};
+
+export const extractDataByDifficulty = (data: DashboardDataItem[]) => {
+  let result: { name: string; value: number }[] = [];
+
+  data.forEach((item) => {
+    for (let difficulty in item.exercisesGroupedByDifficulty) {
+      const existingDifficulty = result.find((res) => res.name === difficulty);
+      if (existingDifficulty) {
+        existingDifficulty.value +=
+          item.exercisesGroupedByDifficulty[difficulty].length;
+      } else {
+        result.push({
+          name: difficulty,
+          value: item.exercisesGroupedByDifficulty[difficulty].length,
+        });
+      }
+    }
+  });
+
+  return result;
+};
+
+export function generateRandomColor() {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
 }

@@ -5,8 +5,8 @@ export default async function ParentLoginPage() {
   return (
     <>
       <Header />
-      <section className="bg-ct-blue-600 min-h-screen grid place-items-center">
-      <ChildLogin />
+      <section className="bg-green-600 min-h-screen grid place-items-center">
+        <ChildLogin />
       </section>
     </>
   );

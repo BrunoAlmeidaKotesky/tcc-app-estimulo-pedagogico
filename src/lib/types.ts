@@ -9,7 +9,7 @@ export interface FilteredUser {
   updatedAt: string;
 }
 
-export type UserType = 'parent' | 'child';
+export type UserType = "parent" | "child";
 export interface LoggedParent {
   user: FilteredUser;
   childAccessCodes: { name: string; accessCode: string }[];
@@ -27,11 +27,10 @@ export interface UserLoginResponse {
   userType: UserType;
 }
 
-export type ChildUser = Pick<Child, 'id' | 'name' | 'points' | 'age'>;
+export type ChildUser = Pick<Child, "id" | "name" | "points" | "age">;
 
 export interface ExerciseBody {
   exerciseId: string;
-  childId: string;
   answerId: string;
 }
 
@@ -42,10 +41,10 @@ export interface BadgeBody {
 export type BadgeData = {
   badgeId: string;
   badge: {
-      name: string;
-      icon: string | null;
-      criteria: string;
-      threshold: number;
+    name: string;
+    icon: string | null;
+    criteria: string;
+    threshold: number;
   };
 };
 export interface BadgeResponse {
@@ -55,7 +54,7 @@ export interface BadgeResponse {
 
 export interface AnswerByExercise {
   exercise: Exercise;
-  answers: Answer[];
+  answers: Omit<Answer, "isCorrect">[];
 }
 
 export interface SendAnswerResponse {
@@ -64,3 +63,32 @@ export interface SendAnswerResponse {
 }
 
 export type Updater<T> = (value: T | ((prev: T) => T)) => void;
+
+export type BaseDataItem = {
+  isCorrect: boolean;
+  exerciseId: string;
+};
+
+export type DataByDifficulty = BaseDataItem & {
+  subjectName: string;
+};
+export type DataBySubject = BaseDataItem & {
+  difficulty: string;
+};
+
+export type ExerciseDataItem = DataByDifficulty | DataBySubject;
+export type GroupedUnion = DataByDifficulty & DataBySubject;
+export type GroupedByDifficulty = {
+  [key: string]: ExerciseDataItem[];
+};
+
+export type GroupedBySubject = {
+  [key: string]: ExerciseDataItem[];
+};
+
+export type DashboardDataItem = {
+  name: string;
+  points: number;
+  exercisesGroupedBySubject: GroupedBySubject;
+  exercisesGroupedByDifficulty: GroupedByDifficulty;
+};

@@ -23,12 +23,12 @@ export async function middleware(req: NextRequest) {
 
   if (
     !token &&
-    (req.nextUrl.pathname.startsWith("/api/users") ||
-      req.nextUrl.pathname.startsWith("/api/auth/logout"))
+    req.nextUrl.pathname.startsWith("/api/users") //||
+    //req.nextUrl.pathname.startsWith("/api/auth/logout")
   ) {
     return getErrorResponse(
       401,
-      "Você não está logado, por favor forneça um token de acesso."
+      "Você não está logado, por favor forneça um token de acessoAAAAA."
     );
   }
 
@@ -68,11 +68,21 @@ export async function middleware(req: NextRequest) {
 
   if (req.url.includes("/parent-login") && authUser)
     return NextResponse.redirect(new URL("/perfil", req.url));
-  else if(req.url.includes("/child-login") && authUser)
+  else if (req.url.includes("/child-login") && authUser)
     return NextResponse.redirect(new URL("/questionario", req.url));
   return response;
 }
 
 export const config = {
-  matcher: ["/perfil", "/login", "/api/users/:path*", "/api/auth/logout", "/api/get-exercises", "/api/get-badges", "/api/grant-badge", "/api/send-answer"],
+  matcher: [
+    "/perfil",
+    "/login",
+    "/api/users/:path*",
+    "/api/auth/logout",
+    "/api/get-exercises",
+    "/api/get-badges",
+    "/api/grant-badge",
+    "/api/send-answer",
+    "/api/get-dashboards-data",
+  ],
 };
