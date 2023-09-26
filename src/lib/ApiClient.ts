@@ -27,11 +27,9 @@ class ApiClient {
     const data = isJson ? await response.json() : await response.text();
     if (!response.ok) {
       if (isJson && data.errors !== null && data.errors !== undefined) {
-        console.log("Caiu no erro new Error(data.errors)");
         //@ts-ignore
         return Err(new Error(data.errors));
       }
-      console.log("Caiu no erro data.message || response.statusText");
       return Err(new Error(data.message || response.statusText));
     }
     return Ok(data as T);
@@ -96,7 +94,6 @@ class ApiClient {
   ): Promise<Result<UserResponse<T>, Error>> {
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
-      console.log("Setting token", token);
     }
 
     const response = await fetch(`${SERVER_ENDPOINT}/api/users/${type}`, {

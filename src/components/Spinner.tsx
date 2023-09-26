@@ -16,7 +16,7 @@ const Spinner: React.FC<SpinnerProps> = ({
     <svg
       role="status"
       className={twMerge(
-        "mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600",
+        "mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-#1B4D3E-600",
         `${color} ${bgColor}`
       )}
       style={{ height, width }}

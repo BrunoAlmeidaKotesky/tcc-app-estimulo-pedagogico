@@ -66,13 +66,13 @@ export default function LoginForm() {
         <FormInput label="Senha" name="password" type="password" />
         <LoadingButton
           loading={store?.requestLoading || false}
-          textColor="text-ct-blue-600"
+          textColor="text-green-600"
         >
           Entrar
         </LoadingButton>
         <span className="block">
           Não possui uma conta?{" "}
-          <Link href="/cadastro" className="text-ct-blue-600">
+          <Link href="/cadastro" className="text-green-600">
             Cadastre-se aqui!
           </Link>
         </span>

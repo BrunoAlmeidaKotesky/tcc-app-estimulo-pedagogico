@@ -83,7 +83,6 @@ async function getChildrenData(parentId: string) {
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     const userId = req.headers.get("X-USER-ID");
-    console.log(userId);
     if (!userId)
       return getErrorResponse(500, "Ocorreu um erro ao buscar os dados.");
 

@@ -20,10 +20,10 @@ export const BadgeCard: React.FC<BadgeCardProps> = ({ achieved, badge }) => {
     >
       <FaMedal
         style={{ fontSize: "64px" }}
-        color={achieved ? "blue" : "grey"}
+        color={achieved ? "#1B4D3E" : "grey"}
       />
       <Typography
-        color={achieved ? "blue" : "grey"}
+        color={achieved ? "#1B4D3E" : "grey"}
         sx={{ fontWeight: achieved ? "bold" : "normal" }}
       >
         {badge.badge.name}

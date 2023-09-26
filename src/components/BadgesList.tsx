@@ -59,7 +59,7 @@ export const BadgesList: React.FC<BadgeListProps> = ({
           alignItems: "center",
         }}
       >
-        <p style={{ fontSize: "18px", color: "blue" }}>
+        <p style={{ fontSize: "18px", color: "#1B4D3E" }}>
           Visualize todas as medalhas disponíveis e conquistadas
         </p>
         <Select

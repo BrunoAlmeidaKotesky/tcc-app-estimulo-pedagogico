@@ -5,7 +5,7 @@ export default async function LoginPage() {
   return (
     <>
       <Header />
-      <section className="bg-ct-blue-600 min-h-screen grid place-items-center">
+      <section className="bg-green-600 min-h-screen grid place-items-center">
         <div className="w-full">
           <h2 className="text-lg text-center mb-4 text-ct-dark-200">
             Faça login para continuar
@@ -18,12 +18,12 @@ export default async function LoginPage() {
             }}
           >
             <Link href={"/login/responsavel"}>
-              <button className="w-full bg-ct-dark-200 text-ct-blue-600 rounded-md py-2 px-4">
+              <button className="w-full bg-ct-dark-200 text-green-600 rounded-md py-2 px-4">
                 Sou Responsável
               </button>
             </Link>
             <Link href={"/login/filho"}>
-              <button className="w-full bg-ct-dark-200 text-ct-blue-600 rounded-md py-2 px-4">
+              <button className="w-full bg-ct-dark-200 text-green-600 rounded-md py-2 px-4">
                 Sou Filho
               </button>
             </Link>

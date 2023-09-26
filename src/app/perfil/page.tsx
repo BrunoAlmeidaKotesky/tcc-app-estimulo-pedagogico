@@ -18,7 +18,7 @@ export default async function ProfilePage() {
   return (
     <>
       <Header />
-      <section className="bg-ct-blue-600  min-h-screen pt-20">
+      <section className="bg-green-600  min-h-screen pt-20">
         <div className="max-w-4xl mx-auto bg-ct-dark-100 rounded-md h-[20rem] flex justify-center items-center">
           <div>
             <p className="mb-3 text-5xl text-center font-semibold">
@@ -28,18 +28,6 @@ export default async function ProfilePage() {
               <p className="mb-3">Id: {data.user.id}</p>
               <p className="mb-3">Nome: {data.user.name}</p>
               <p className="mb-3">Email: {data.user.email}</p>
-              <div className="mb-3">
-                Códigos de acesso:
-                <ul>
-                  {data.childAccessCodes.map(({ accessCode, name }) => (
-                    <li key={accessCode}>
-                      <div style={{ display: "flex", gap: 8 }}>
-                        <strong>{accessCode}</strong>-<span>{name}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
             </div>
           </div>
         </div>

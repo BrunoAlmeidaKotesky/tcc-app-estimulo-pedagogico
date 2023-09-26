@@ -46,7 +46,7 @@ export function ExercisesPagination(props: {
         <div style={{ display: "flex", gap: "10px", color: "white" }}>
           <button
             style={{
-              backgroundColor: "blue",
+              backgroundColor: "#1B4D3E",
               padding: "10px",
               borderRadius: "5px",
             }}
@@ -56,7 +56,7 @@ export function ExercisesPagination(props: {
           </button>
           <Link
             style={{
-              backgroundColor: "blue",
+              backgroundColor: "#1B4D3E",
               padding: "10px",
               borderRadius: "5px",
             }}
@@ -72,10 +72,10 @@ export function ExercisesPagination(props: {
               padding: "10px",
               gap: "10px",
               flexDirection: "column",
-              border: "10px solid blue",
+              border: "10px solid #1B4D3E",
             }}
           >
-            <p style={{ fontSize: "22px", color: "blue" }}>
+            <p style={{ fontSize: "22px", color: "#1B4D3E" }}>
               Parabéns! Novas medalhas conquistadas!
             </p>
             <Grid container spacing={2}>

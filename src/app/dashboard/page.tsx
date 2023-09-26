@@ -19,9 +19,9 @@ export default async function Dashboard() {
   return (
     <>
       <Header />
-      <section className="bg-ct-blue-600 min-h-screen pt-20">
+      <section className="bg-green-600 min-h-screen pt-20">
         <div className="max-w-4xl mx-auto bg-ct-dark-100 rounded-md flex flex-col p-5 h-full">
-          <p style={{ fontSize: "32px", fontWeight: "bold", color: "blue" }}>
+          <p style={{ fontSize: "32px", fontWeight: "bold", color: "#1B4D3E" }}>
             Dashboard
           </p>
           <div
@@ -33,7 +33,7 @@ export default async function Dashboard() {
               marginBottom: "20px",
             }}
           >
-            <p style={{ fontSize: "18px", color: "blue" }}>
+            <p style={{ fontSize: "18px", color: "#1B4D3E" }}>
               Visualize o desempenho de seu(s) filho(s) através de gráficos e
               estatísticas. É possível filtrar por matéria escolar e também por
               algum filho específico.
