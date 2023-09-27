@@ -11,12 +11,11 @@ import type {
 } from "./types";
 import { Ok, Err, DefaultCatch, Result } from "bakutils-catcher";
 import { Badge } from "@prisma/client";
-import { getEnvVariable } from "./helpers";
 
 const SERVER_ENDPOINT =
-  getEnvVariable("VERCEL_URL") ||
-  getEnvVariable("NEXT_PUBLIC_URL") ||
-  getEnvVariable("SERVER_ENDPOINT") ||
+  process.env.VERCEL_URL ||
+  process.env.NEXT_PUBLIC_URL ||
+  process.env.SERVER_ENDPOINT ||
   "http://localhost:3000";
 
 const headers: Record<string, string> = {
