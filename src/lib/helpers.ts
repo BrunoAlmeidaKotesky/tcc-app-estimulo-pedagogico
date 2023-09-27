@@ -3,9 +3,7 @@ import { ZodError } from "zod";
 import toast from "react-hot-toast";
 import { DashboardDataItem } from "./types";
 
-type EnvVariableKey = "JWT_SECRET_KEY" | "JWT_EXPIRES_IN";
-
-export function getEnvVariable(key: EnvVariableKey): string {
+export function getEnvVariable(key: string): string {
   const value = process.env[key];
 
   if (!value || value.length === 0) {
