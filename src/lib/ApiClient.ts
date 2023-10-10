@@ -13,14 +13,9 @@ import { Ok, Err, DefaultCatch, Result } from "bakutils-catcher";
 import { Badge } from "@prisma/client";
 
 console.log('VERCEL_URL:', process.env.VERCEL_URL);
-console.log('NEXT_PUBLIC_URL:', process.env.NEXT_PUBLIC_URL);
-console.log('SERVER_ENDPOINT:', process.env.SERVER_ENDPOINT);
 
-const SERVER_ENDPOINT =
-  process.env.VERCEL_URL ||
-  process.env.NEXT_PUBLIC_URL ||
-  process.env.SERVER_ENDPOINT ||
-  "http://localhost:3000";
+const SERVER_ENDPOINT = process.env.VERCEL_URL || "http://localhost:3000";
+process.env.SERVER_ENDPOINT = SERVER_ENDPOINT;
 
 const headers: Record<string, string> = {
   "Content-Type": "application/json",
