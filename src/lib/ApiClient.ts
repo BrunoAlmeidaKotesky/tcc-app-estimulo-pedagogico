@@ -12,6 +12,10 @@ import type {
 import { Ok, Err, DefaultCatch, Result } from "bakutils-catcher";
 import { Badge } from "@prisma/client";
 
+console.log('VERCEL_URL:', process.env.VERCEL_URL);
+console.log('NEXT_PUBLIC_URL:', process.env.NEXT_PUBLIC_URL);
+console.log('SERVER_ENDPOINT:', process.env.SERVER_ENDPOINT);
+
 const SERVER_ENDPOINT =
   process.env.VERCEL_URL ||
   process.env.NEXT_PUBLIC_URL ||
