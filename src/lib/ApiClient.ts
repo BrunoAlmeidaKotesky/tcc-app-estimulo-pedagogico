@@ -12,10 +12,10 @@ import type {
 import { Ok, Err, DefaultCatch, Result } from "bakutils-catcher";
 import { Badge } from "@prisma/client";
 
-console.log('VERCEL_URL:', process.env.VERCEL_URL);
 
-const SERVER_ENDPOINT = process.env.VERCEL_URL || "http://localhost:3000";
-process.env.SERVER_ENDPOINT = SERVER_ENDPOINT;
+const SERVER_ENDPOINT = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+console.log('API_BASE_URL:', SERVER_ENDPOINT);
+
 
 const headers: Record<string, string> = {
   "Content-Type": "application/json",
