@@ -61,7 +61,7 @@ const Header = () => {
         <nav className="h-full flex justify-between container items-center">
           <div>
             <Link href="/" className="text-ct-dark-600 text-2xl font-semibold">
-              TCC
+              TCC - APPRENDER
             </Link>
           </div>
           <ul className="flex items-center gap-4">
