@@ -26,7 +26,7 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
       {loading ? (
         <div className="flex items-center gap-3">
           <Spinner />
-          <span className="text-slate-500 inline-block">Loading...</span>
+          <span className="text-slate-500 inline-block">Carregando ...</span>
         </div>
       ) : (
         <span className={`${textColor}`}>{children}</span>

@@ -25,7 +25,6 @@ export default async function ProfilePage() {
               Página de Perfil
             </p>
             <div className="mt-8">
-              <p className="mb-3">Id: {data.user.id}</p>
               <p className="mb-3">Nome: {data.user.name}</p>
               <p className="mb-3">Email: {data.user.email}</p>
             </div>
